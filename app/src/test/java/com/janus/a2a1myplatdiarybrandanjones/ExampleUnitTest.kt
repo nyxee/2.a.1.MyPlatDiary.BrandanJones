@@ -20,11 +20,16 @@ class ExampleUnitTest {
         assertEquals(5,2+3)
     }
     @Test
-    fun addThreeAndThree_equalsSix(   ){
+    fun addThreeAndThree_equalsSix(){
         assertEquals(6,3+3)
     }
     @Test
     fun addFourAndThree_equalsSeven(){
         assertEquals(7,4+3)
+    }
+
+    @Test
+    fun addFiveAndThree_equalsEight(){
+        assertEquals(8,4+4)
     }
 }
