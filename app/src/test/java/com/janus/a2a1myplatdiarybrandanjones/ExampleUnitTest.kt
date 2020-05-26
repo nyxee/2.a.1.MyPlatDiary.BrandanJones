@@ -1,5 +1,6 @@
 package com.janus.a2a1myplatdiarybrandanjones
 
+import com.janus.a2a1myplatdiarybrandanjones.dto.Plant
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -31,5 +32,11 @@ class ExampleUnitTest {
     @Test
     fun addFiveAndThree_equalsEight(){
         assertEquals(8,4+4)
+    }
+
+    @Test
+    fun confirmEasternRedbud_outputsEasternRedbud(){
+        var plant = Plant("Cersis", "canadesis", "Eastern Redbud")
+        assertEquals("Eastern Redbud", plant.toString())
     }
 }
