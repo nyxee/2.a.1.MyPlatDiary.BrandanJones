@@ -23,4 +23,8 @@ class ExampleUnitTest {
     fun addThreeAndThree_equalsFive(){
         assertEquals(6,3+3)
     }
+    @Test
+    fun addFourAndThree_equalsFive(){
+        assertEquals(7,4+3)
+    }
 }
