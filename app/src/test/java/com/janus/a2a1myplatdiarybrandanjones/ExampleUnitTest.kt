@@ -39,4 +39,10 @@ class ExampleUnitTest {
         var plant = Plant("Cersis", "canadesis", "Eastern Redbud")
         assertEquals("Eastern Redbud", plant.toString())
     }
+
+    @Test
+    fun additonIsNotCorrect(){
+        assertEquals(4, 1+2)
+    }
+
 }
