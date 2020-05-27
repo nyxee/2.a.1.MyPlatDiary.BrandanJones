@@ -41,7 +41,7 @@ class ExampleUnitTest {
     }
 
     @Test
-    fun additonIsNotCorrect(){
+    fun additionIsNotCorrect(){
         assertEquals(3, 1+2)
     }
 
