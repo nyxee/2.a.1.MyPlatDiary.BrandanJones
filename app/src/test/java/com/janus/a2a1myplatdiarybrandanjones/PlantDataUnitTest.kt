@@ -6,8 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import com.janus.a2a1myplatdiarybrandanjones.dto.Plant
 import com.janus.a2a1myplatdiarybrandanjones.service.PlantService
 import com.janus.a2a1myplatdiarybrandanjones.ui.main.MainViewModel
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -38,6 +40,15 @@ class PlantDataUnitTest {
         givenAFeedOfMockedPlantDataAreAvailable()
         whenSearchForRedbud()
         thenResultContainsRedbud()
+        thenVerifyFunctionsInvoked()
+    }
+    private fun thenVerifyFunctionsInvoked() {
+        verify { plantService.fetchPlants("Redbud") }
+        verify(exactly = 1) { plantService.fetchPlants("Redbud") }
+//        verify(exactly = 2) { plantService.fetchPlants("Redbud") } //this fails
+        verify(exactly = 0) { plantService.fetchPlants("Maple") }
+
+        confirmVerified(plantService) //Checks if all recorded calls were verified.
     }
 
     private fun givenAFeedOfMockedPlantDataAreAvailable() {
@@ -90,6 +101,8 @@ class PlantDataUnitTest {
         whenSearchForGarbage()
         thenGetZeroResults()
     }
+
+
 
     private fun whenSearchForGarbage() {
         mvm.fetchPlants("fedcdsdefefvfefr")

@@ -11,7 +11,7 @@ class MainViewModel : ViewModel() {
     var plantService = PlantService()
 
     fun fetchPlants(plantName: String) {
-        System.out.println("MainViewModel::fetchPlants($plantName) ")
+        //System.out.println("MainViewModel::fetchPlants($plantName) ")
         plants = plantService.fetchPlants(plantName)
     }
 
