@@ -1,19 +1,30 @@
 package com.janus.a2a1myplatdiarybrandanjones.ui.main
 
+import android.Manifest
+import android.app.Activity.RESULT_OK
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.janus.a2a1myplatdiarybrandanjones.R
 import kotlinx.android.synthetic.main.main_fragment.*
+//import java.util.jar.Manifest
 
 class MainFragment : Fragment() {
-
+    private val CAMERA_REQUEST_CODE = 1998
+    val CAMERA_PERMISSION_REQUEST_CODE = 1997
     companion object {
         val TAG = MainFragment::class.java.simpleName
         fun newInstance() = MainFragment()
@@ -34,6 +45,53 @@ class MainFragment : Fragment() {
             Log.v(TAG, "\t\t Number of Plants Returned:: ${it.size}")
             actPlantName.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, it))
         })
+
+        btnTakePhoto.setOnClickListener {
+            prepTakePhoto()
+        }
+    }
+
+    /**
+     * See if we have Permission or Not.
+     */
+    private fun prepTakePhoto() {
+        if (ContextCompat.checkSelfPermission(context!!,  Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+            takePhoto()
+        else {
+            val permissionRequest = arrayOf(Manifest.permission.CAMERA)
+
+            requestPermissions(permissionRequest, CAMERA_PERMISSION_REQUEST_CODE)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            CAMERA_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    takePhoto()
+                else {
+                    Toast.makeText(context, "Unable To Take Photo Without Permission", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun takePhoto() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {takePhotoIntent->
+            takePhotoIntent.resolveActivity(context!!.packageManager)?.also {
+                startActivityForResult(takePhotoIntent, CAMERA_REQUEST_CODE)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK)
+            if (requestCode == CAMERA_REQUEST_CODE){
+                val imageBitMap = data!!.extras!!.get("data") as Bitmap
+                imgPlant.setImageBitmap(imageBitMap)
+            }
     }
 
 }
