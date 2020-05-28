@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -16,13 +17,19 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.janus.a2a1myplatdiarybrandanjones.R
 import kotlinx.android.synthetic.main.main_fragment.*
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
+
 //import java.util.jar.Manifest
 
 class MainFragment : Fragment() {
+    private val SAVE_IMAGE_REQUEST_CODE = 1999
     private val CAMERA_REQUEST_CODE = 1998
     val CAMERA_PERMISSION_REQUEST_CODE = 1997
     companion object {
@@ -31,6 +38,8 @@ class MainFragment : Fragment() {
     }
 
     private lateinit var viewModel: MainViewModel
+
+    private lateinit var currentPhotoPath: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -79,9 +88,21 @@ class MainFragment : Fragment() {
 
     private fun takePhoto() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {takePhotoIntent->
-            takePhotoIntent.resolveActivity(context!!.packageManager)?.also {
-                startActivityForResult(takePhotoIntent, CAMERA_REQUEST_CODE)
+//            takePhotoIntent.resolveActivity(context!!.packageManager)?.also {
+//                startActivityForResult(takePhotoIntent, CAMERA_REQUEST_CODE)
+//            }
+            takePhotoIntent.resolveActivity(context!!.packageManager)
+            if (takePhotoIntent == null){
+                Toast.makeText(context, "Unable To Save Photo!", Toast.LENGTH_SHORT).show()
+            }else {
+                val photoFile = createImageFile()
+                photoFile.also {
+                    val photoURI = FileProvider.getUriForFile(activity!!.applicationContext, "com.janus.a2a1myplatdiarybrandanjones.fileprovider", it)
+                    takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoFile)
+                    startActivityForResult(takePhotoIntent, SAVE_IMAGE_REQUEST_CODE)
+                }
             }
+
         }
     }
 
@@ -91,7 +112,18 @@ class MainFragment : Fragment() {
             if (requestCode == CAMERA_REQUEST_CODE){
                 val imageBitMap = data!!.extras!!.get("data") as Bitmap
                 imgPlant.setImageBitmap(imageBitMap)
+            }else if (requestCode == SAVE_IMAGE_REQUEST_CODE){
+                Toast.makeText(context, "Image Saved", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    fun createImageFile(): File{
+        val timeStamp = SimpleDateFormat("HHmmss_ddMMYYYY", Locale.getDefault()).format(Date())
+        val storageDir = context!!.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
+        return File.createTempFile("PlantDiary$timeStamp",".jpg", storageDir).apply {
+            currentPhotoPath = absolutePath
+        }
     }
 
 }
