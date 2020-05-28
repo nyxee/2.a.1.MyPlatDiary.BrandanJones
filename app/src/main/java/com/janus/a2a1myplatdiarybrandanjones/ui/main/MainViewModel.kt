@@ -11,8 +11,10 @@ class MainViewModel : ViewModel() {
     var plantService = PlantService()
 
     fun fetchPlants(plantName: String) {
-        //System.out.println("MainViewModel::fetchPlants($plantName) ")
+        System.out.println("MainViewModel::fetchPlantsts($plantName) ")
         plants = plantService.fetchPlants(plantName)
+        System.out.println("MainViewModel::fetchPlantsts($plantName) :: Sixe REturned: ${plants.value}")
+
     }
 
 
@@ -22,4 +24,8 @@ class MainViewModel : ViewModel() {
         value = "This is dashboard Fragment"
     }
     val text: LiveData<String> = _text
+
+    init {
+        fetchPlants("e")
+    }
 }

@@ -6,4 +6,5 @@
     <string name="plantName">Plant Name</string>
     <string name="description">Description</string>
     <string name="datePlanted">Date Planted</string>
+    <string name="later">IMPLEMENT LATER</string>
 </resources>

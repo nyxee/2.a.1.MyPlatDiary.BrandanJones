@@ -21,11 +21,20 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        customDebugType {
+            debuggable true
+        }
     }
-
-    lintOptions{
-        abortOnError false
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
+//    kotlinOptions {
+//        jvmTarget = '1.8'
+//    }
+//    lintOptions{
+//        abortOnError false
+//    }
 
 }
 
@@ -44,4 +53,9 @@ dependencies {
     //androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation 'io.mockk:mockk:1.10.0'
+
+    //RETROFIT
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
 }
