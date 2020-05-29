@@ -32,6 +32,7 @@ import java.util.*
 //import java.util.jar.Manifest
 
 class MainFragment : Fragment() {
+    private val LOCATION_PERMISSION_REQUEST_CODE = 2001
     private val IMAGE_GALLERY_REQUEST_CODE = 2000
     private val SAVE_IMAGE_REQUEST_CODE = 1999
     private val CAMERA_REQUEST_CODE = 1998
@@ -42,6 +43,7 @@ class MainFragment : Fragment() {
     }
 
     private lateinit var viewModel: MainViewModel
+    private lateinit var locationViewModel: LocationViewModel
 
     private lateinit var currentPhotoPath: String
 
@@ -65,6 +67,32 @@ class MainFragment : Fragment() {
         btnLogin.setOnClickListener{
             prepOpenImageGalary()
         }
+
+        prepRequestLocationUpdates()
+    }
+
+    private fun prepRequestLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            requestLocationUpdated()
+        }else {
+            // TODO: Consider calling  ActivityCompat#requestPermissions here to request the missing
+            // permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            val permissionRequest = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+            requestPermissions(permissionRequest, LOCATION_PERMISSION_REQUEST_CODE)
+        }
+    }
+
+    private fun requestLocationUpdated() {
+        locationViewModel = ViewModelProvider(this).get(LocationViewModel::class.java)
+        locationViewModel.getLocationLiveData().observe(viewLifecycleOwner, Observer {
+            lbllatitudeValue.text = it.latitude
+            lbllongitudeValue.text = it.longitude
+        })
     }
 
     private fun prepOpenImageGalary() {
@@ -95,6 +123,13 @@ class MainFragment : Fragment() {
                     takePhoto()
                 else {
                     Toast.makeText(context, "Unable To Take Photo Without Permission", Toast.LENGTH_SHORT).show()
+                }
+            }
+            LOCATION_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    requestLocationUpdated()
+                else {
+                    Toast.makeText(context, "Unable To Update Location Without Permission", Toast.LENGTH_SHORT).show()
                 }
             }
         }

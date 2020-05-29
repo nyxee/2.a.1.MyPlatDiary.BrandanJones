@@ -15,6 +15,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/latitude"
+        app:layout_constraintEnd_toEndOf="@id/lbllongitude"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@+id/lbllatitude" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/lbllatitudeValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -41,7 +42,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/lbllongitudeValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -49,7 +50,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/zero"
         app:layout_constraintStart_toEndOf="@+id/lbllongitude"
-        app:layout_constraintTop_toBottomOf="@+id/textView1" />
+        app:layout_constraintTop_toBottomOf="@+id/lbllatitudeValue" />
 
     <Spinner
         android:id="@+id/spnSpecimen"
