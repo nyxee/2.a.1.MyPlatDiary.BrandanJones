@@ -24,6 +24,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.janus.a2a1myplatdiarybrandanjones.R
+import com.janus.a2a1myplatdiarybrandanjones.dto.Specimen
 import kotlinx.android.synthetic.main.main_fragment.*
 import java.io.File
 import java.text.SimpleDateFormat
@@ -67,8 +68,21 @@ class MainFragment : Fragment() {
         btnLogin.setOnClickListener{
             prepOpenImageGalary()
         }
-
+        btnSave.setOnClickListener{
+            saveSpecimen()
+        }
         prepRequestLocationUpdates()
+    }
+
+    private fun saveSpecimen() {
+        var specimen = Specimen().apply {
+            latitude = lbllatitudeValue.text.toString()
+            longitude = lbllongitudeValue.text.toString()
+            plantName = actPlantName.text.toString()
+            description = etDescription.text.toString()
+            datePlanted = etDatePlanted.text.toString()
+        }
+
     }
 
     private fun prepRequestLocationUpdates() {
