@@ -36,7 +36,7 @@ class MainViewModel : ViewModel() {
                 Log.v(TAG, "\t\t\tdocument saved")
             }
             .addOnFailureListener {
-                Log.e(TAG, "\t\t\tFAILED::::  ${it.localizedMessage}")
+                Log.e(TAG, "\t\tFAILED::::  ${it.localizedMessage}")
             }.apply {
 
             }

@@ -44,6 +44,8 @@ class MainFragment : Fragment() {
     private val SAVE_IMAGE_REQUEST_CODE = 1999
     private val CAMERA_REQUEST_CODE = 1998
     val CAMERA_PERMISSION_REQUEST_CODE = 1997
+
+
     companion object {
         val TAG = MainFragment::class.java.simpleName
         fun newInstance() = MainFragment()
@@ -77,7 +79,11 @@ class MainFragment : Fragment() {
         }
         btnLogin.setOnClickListener{
             //prepOpenImageGalary()
-            login()
+
+            if (user == null)
+                login()
+            else
+                signOut() //THIS IS FOR TESTING PURPOSES, I WILL USE A LOGOUT MENU.
         }
         btnSave.setOnClickListener{
             saveSpecimen()
@@ -88,11 +94,25 @@ class MainFragment : Fragment() {
     private fun login() {
         val providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
-            AuthUI.IdpConfig.GoogleBuilder().build())
+            AuthUI.IdpConfig.GoogleBuilder().build(),
+            AuthUI.IdpConfig.FacebookBuilder().build())
+
 
         startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers).build(), AUTH__REQUEST_CODE)
     }
 
+    private fun signOut() {
+        AuthUI.getInstance()
+            .signOut(activity!!.applicationContext)
+            .addOnCompleteListener {
+                if (!it.isSuccessful)
+                    Log.e(TAG, "\t\tFAILED TO COMPLETE LOGOUT")
+                if (it.isComplete)
+                    Log.e(TAG, "\t\tLOGGED OUT COMPLETED SUCCESSFULLY")
+
+            }
+
+    }
     private fun saveSpecimen() {
         val specimen = Specimen().apply {
             latitude = lbllatitudeValue.text.toString()
