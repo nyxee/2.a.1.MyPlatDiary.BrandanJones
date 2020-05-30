@@ -95,7 +95,8 @@ class MainFragment : Fragment() {
         val providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
             AuthUI.IdpConfig.GoogleBuilder().build(),
-            AuthUI.IdpConfig.FacebookBuilder().build())
+            AuthUI.IdpConfig.FacebookBuilder().build(),
+            AuthUI.IdpConfig.PhoneBuilder().build())
 
 
         startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers).build(), AUTH__REQUEST_CODE)
