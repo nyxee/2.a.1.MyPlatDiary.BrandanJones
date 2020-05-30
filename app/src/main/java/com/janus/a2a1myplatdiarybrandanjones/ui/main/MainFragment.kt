@@ -62,6 +62,10 @@ class MainFragment : Fragment() {
             actvPlantName.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, it))
         })
 
+        viewModel.specimens.observe(viewLifecycleOwner, Observer { specimens ->
+            spnSpecimens.adapter = ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, specimens)
+        })
+
         btnTakePhoto.setOnClickListener {
             prepTakePhoto()
         }
@@ -75,7 +79,7 @@ class MainFragment : Fragment() {
     }
 
     private fun saveSpecimen() {
-        var specimen = Specimen().apply {
+        val specimen = Specimen().apply {
             latitude = lbllatitudeValue.text.toString()
             longitude = lbllongitudeValue.text.toString()
             plantName = actvPlantName.text.toString()
@@ -191,7 +195,7 @@ class MainFragment : Fragment() {
             }
     }
 
-    fun createImageFile(): File{
+    private fun createImageFile(): File{
         val timeStamp = SimpleDateFormat("HHmmss_ddMMYYYY", Locale.getDefault()).format(Date())
         val storageDir = context!!.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 
