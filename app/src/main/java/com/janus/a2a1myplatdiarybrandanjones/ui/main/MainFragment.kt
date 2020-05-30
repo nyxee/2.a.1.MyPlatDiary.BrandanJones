@@ -24,6 +24,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.firebase.ui.auth.AuthUI
+import com.google.android.gms.auth.api.Auth
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.janus.a2a1myplatdiarybrandanjones.R
@@ -85,7 +86,9 @@ class MainFragment : Fragment() {
     }
 
     private fun login() {
-        val providers = arrayListOf(AuthUI.IdpConfig.EmailBuilder().build())
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build())
 
         startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers).build(), AUTH__REQUEST_CODE)
     }

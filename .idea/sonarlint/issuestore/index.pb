@@ -39,3 +39,9 @@ Tapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/ui/main/LocationViewMod
 Sapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/ui/main/LocationliveData.kt,6/c/6cc3ea62dc69901cdd923e7aa04a7312cbe7b752
 w
 Gapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/dto/Specimen.kt,d/1/d1d60eb8b45d12bb45b0878ce547ad066f9b0281
+H
+app/google-services.json,f/d/fd8d34b142d02ec743a8efefefd2c097961666e9
+A
+gradle.properties,2/a/2afbb999f001938c88fa43fc2ef52abf0f8213e4
+@
+local.properties,0/7/0712df971a99ac4d2fccb8e0fb19f377f3374cca
