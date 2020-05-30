@@ -66,6 +66,14 @@ dependencies {
 
     //FIREBASE
     implementation 'com.google.firebase:firebase-analytics:17.4.2'
+    implementation 'com.google.firebase:firebase-firestore:21.4.3'
+   //FOR AUTHUI
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.1'
+
+    //FaceBook Login
+    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
+    //phone number logn
+    implementation 'com.google.firebase:firebase-auth:19.3.1'
 
 
 }

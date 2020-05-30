@@ -31,3 +31,17 @@ Happ/src/main/java/com/janus/a2a1myplatdiarybrandanjones/dao/IPlantDAO.kt,0/f/0
 Qapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/RetrofitClientInstance.kt,b/9/b9a388a31cd57b7829afe9d53af37ceb86c61534
 ƒ
 Sapp/src/test/java/com/janus/a2a1myplatdiarybrandanjones/PlantDataIntegrationTest.kt,c/6/c64d500480637e04012c87a60a14032ad33b3b0d
+~
+Napp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/dto/LocationDetails.kt,a/a/aa59d78f797a5866e499d8e3704afff79e00b7fd
+„
+Tapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/ui/main/LocationViewModel.kt,6/a/6a8ed156167cb825e3ad29b49426ba96a33e0152
+ƒ
+Sapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/ui/main/LocationliveData.kt,6/c/6cc3ea62dc69901cdd923e7aa04a7312cbe7b752
+w
+Gapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/dto/Specimen.kt,d/1/d1d60eb8b45d12bb45b0878ce547ad066f9b0281
+H
+app/google-services.json,f/d/fd8d34b142d02ec743a8efefefd2c097961666e9
+A
+gradle.properties,2/a/2afbb999f001938c88fa43fc2ef52abf0f8213e4
+@
+local.properties,0/7/0712df971a99ac4d2fccb8e0fb19f377f3374cca

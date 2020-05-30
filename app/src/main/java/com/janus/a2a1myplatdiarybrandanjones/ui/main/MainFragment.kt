@@ -23,6 +23,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.firebase.ui.auth.AuthUI
+import com.google.android.gms.auth.api.Auth
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.janus.a2a1myplatdiarybrandanjones.R
 import com.janus.a2a1myplatdiarybrandanjones.dto.Specimen
 import kotlinx.android.synthetic.main.main_fragment.*
@@ -33,11 +37,15 @@ import java.util.*
 //import java.util.jar.Manifest
 
 class MainFragment : Fragment() {
+    private var user: FirebaseUser? = null
+    private val AUTH__REQUEST_CODE = 2002
     private val LOCATION_PERMISSION_REQUEST_CODE = 2001
     private val IMAGE_GALLERY_REQUEST_CODE = 2000
     private val SAVE_IMAGE_REQUEST_CODE = 1999
     private val CAMERA_REQUEST_CODE = 1998
     val CAMERA_PERMISSION_REQUEST_CODE = 1997
+
+
     companion object {
         val TAG = MainFragment::class.java.simpleName
         fun newInstance() = MainFragment()
@@ -70,7 +78,12 @@ class MainFragment : Fragment() {
             prepTakePhoto()
         }
         btnLogin.setOnClickListener{
-            prepOpenImageGalary()
+            //prepOpenImageGalary()
+
+            if (user == null)
+                login()
+            else
+                signOut() //THIS IS FOR TESTING PURPOSES, I WILL USE A LOGOUT MENU.
         }
         btnSave.setOnClickListener{
             saveSpecimen()
@@ -78,6 +91,29 @@ class MainFragment : Fragment() {
         prepRequestLocationUpdates()
     }
 
+    private fun login() {
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build(),
+            AuthUI.IdpConfig.FacebookBuilder().build(),
+            AuthUI.IdpConfig.PhoneBuilder().build())
+        //TODO: ADD TWITTER, MICROSOFT, GITHUB AND YAHOO.
+
+        startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers).build(), AUTH__REQUEST_CODE)
+    }
+
+    private fun signOut() {
+        AuthUI.getInstance()
+            .signOut(activity!!.applicationContext)
+            .addOnCompleteListener {
+                if (!it.isSuccessful)
+                    Log.e(TAG, "\t\tFAILED TO COMPLETE LOGOUT")
+                if (it.isComplete)
+                    Log.e(TAG, "\t\tLOGGED OUT COMPLETED SUCCESSFULLY")
+
+            }
+
+    }
     private fun saveSpecimen() {
         val specimen = Specimen().apply {
             latitude = lbllatitudeValue.text.toString()
@@ -178,19 +214,26 @@ class MainFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, bundle: Intent?) {
         super.onActivityResult(requestCode, resultCode, bundle)
         if (resultCode == RESULT_OK)
-            if (requestCode == CAMERA_REQUEST_CODE){
-                val imageBitMap = bundle!!.extras!!.get("data") as Bitmap
-                imgPlant.setImageBitmap(imageBitMap)
-            }else if (requestCode == SAVE_IMAGE_REQUEST_CODE){
-                Toast.makeText(context, "Image Saved", Toast.LENGTH_SHORT).show()
-            }else if (requestCode == IMAGE_GALLERY_REQUEST_CODE){
-                if (bundle != null && bundle.data != null) {
-                    val image = bundle.data
-                    //TODO: the linese below require AndroidP.
-                    val source = ImageDecoder.createSource(activity!!.contentResolver, image!!)
-                    val bitmap = ImageDecoder.decodeBitmap(source)
-                    imgPlant.setImageBitmap(bitmap)
+            when (requestCode) {
+                CAMERA_REQUEST_CODE ->{
+                    val imageBitMap = bundle!!.extras!!.get("data") as Bitmap
+                    imgPlant.setImageBitmap(imageBitMap)
+                }
+                SAVE_IMAGE_REQUEST_CODE -> {
+                    Toast.makeText(context, "Image Saved", Toast.LENGTH_SHORT).show()
+                }
+                IMAGE_GALLERY_REQUEST_CODE ->{
+                    if (bundle != null && bundle.data != null) {
+                        val image = bundle.data
+                        //TODO: the linese below require AndroidP.
+                        val source = ImageDecoder.createSource(activity!!.contentResolver, image!!)
+                        val bitmap = ImageDecoder.decodeBitmap(source)
+                        imgPlant.setImageBitmap(bitmap)
 
+                    }
+                }
+                AUTH__REQUEST_CODE -> {
+                    user = FirebaseAuth.getInstance().currentUser
                 }
             }
     }

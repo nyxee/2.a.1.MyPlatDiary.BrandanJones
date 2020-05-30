@@ -36,7 +36,7 @@ class MainViewModel : ViewModel() {
                 Log.v(TAG, "\t\t\tdocument saved")
             }
             .addOnFailureListener {
-                Log.e(TAG, "\t\t\tFAILED::::  ${it.localizedMessage}")
+                Log.e(TAG, "\t\tFAILED::::  ${it.localizedMessage}")
             }.apply {
 
             }
@@ -65,12 +65,6 @@ class MainViewModel : ViewModel() {
             }
         }
     }
-
-    // TODO: Implement the ViewModel
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is dashboard Fragment"
-    }
-    val text: LiveData<String> = _text
 
     init {
         fetchPlants("e")

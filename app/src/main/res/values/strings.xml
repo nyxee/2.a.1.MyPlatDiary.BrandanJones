@@ -7,4 +7,12 @@
     <string name="description">Description</string>
     <string name="datePlanted">Date Planted</string>
     <string name="later">IMPLEMENT LATER</string>
+
+<!--    THIS INSTRUCTION WAS WRONGLY PROVIDED BY DEVELOPER.FACEBOOK.COM-->
+<!--    <string name="facebook_app_id">641492793072140</string>-->
+<!--    <string name="fb_login_protocol_scheme">fb641492793072140</string>-->
+
+    <string name="facebook_application_id" translatable="false">641492793072140</string>
+    <!-- Facebook Application ID, prefixed by 'fb'. Enables Chrome Custom tabs. -->
+    <string name="facebook_login_protocol_scheme" translatable="false">fb641492793072140</string>
 </resources>

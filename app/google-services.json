@@ -87,6 +87,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "551308414057-o4uk6omtakpo8u2lkkpbihu6skv3vmsd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.janus.a2a1myplatdiarybrandanjones",
+            "certificate_hash": "ef850b3664d8f3e02f5a0c842a2d8cdf14e00bcd"
+          }
+        },
+        {
           "client_id": "551308414057-u49ae152l04oi9krggvl55i750u9bue6.apps.googleusercontent.com",
           "client_type": 3
         }
