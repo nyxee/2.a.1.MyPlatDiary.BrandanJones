@@ -59,7 +59,7 @@ class MainFragment : Fragment() {
 
         viewModel.plants.observe(viewLifecycleOwner, Observer {
             Log.v(TAG, "\t\t Number of Plants Returned:: ${it.size}")
-            actPlantName.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, it))
+            actvPlantName.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, it))
         })
 
         btnTakePhoto.setOnClickListener {
@@ -78,11 +78,12 @@ class MainFragment : Fragment() {
         var specimen = Specimen().apply {
             latitude = lbllatitudeValue.text.toString()
             longitude = lbllongitudeValue.text.toString()
-            plantName = actPlantName.text.toString()
+            plantName = actvPlantName.text.toString()
             description = etDescription.text.toString()
             datePlanted = etDatePlanted.text.toString()
-        }
 
+        }
+        viewModel.save(specimen)
     }
 
     private fun prepRequestLocationUpdates() {
