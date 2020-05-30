@@ -1,0 +1,199 @@
+{
+  "project_info": {
+    "project_number": "551308414057",
+    "firebase_url": "https://snapchat-b3f69.firebaseio.com",
+    "project_id": "snapchat-b3f69",
+    "storage_bucket": "snapchat-b3f69.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551308414057:android:ffd05c59370390e9db66f8",
+        "android_client_info": {
+          "package_name": "com.codingwithmitch.googlemaps2018"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "551308414057-u49ae152l04oi9krggvl55i750u9bue6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJuV8y2tnAFwNJN8IFEMcccjc2jhCT0Ww"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551308414057-evp67ch0161utpq5rm76fk5dsfciv9fo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "551308414057-dlud7uam4ja3hcmqj4ef11v66urjr876.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.janus.-5a-CyclopsGroups-1"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551308414057:android:3937fbe3708b43b9",
+        "android_client_info": {
+          "package_name": "com.janus.a19bcyclopsgroups"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "551308414057-u49ae152l04oi9krggvl55i750u9bue6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJuV8y2tnAFwNJN8IFEMcccjc2jhCT0Ww"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551308414057-evp67ch0161utpq5rm76fk5dsfciv9fo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "551308414057-dlud7uam4ja3hcmqj4ef11v66urjr876.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.janus.-5a-CyclopsGroups-1"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551308414057:android:31a64b8d6d0e58ccdb66f8",
+        "android_client_info": {
+          "package_name": "com.janus.a2a1myplatdiarybrandanjones"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "551308414057-u49ae152l04oi9krggvl55i750u9bue6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJuV8y2tnAFwNJN8IFEMcccjc2jhCT0Ww"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551308414057-evp67ch0161utpq5rm76fk5dsfciv9fo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "551308414057-dlud7uam4ja3hcmqj4ef11v66urjr876.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.janus.-5a-CyclopsGroups-1"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551308414057:android:5e0e616543ea6d92db66f8",
+        "android_client_info": {
+          "package_name": "com.janus.a3a2_auth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "551308414057-smmkq4qb2a6u73gl1j3agd4a06lu9732.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.janus.a3a2_auth",
+            "certificate_hash": "eb2a5a32c2e4424a936c45a87a6ac96a1a846194"
+          }
+        },
+        {
+          "client_id": "551308414057-u49ae152l04oi9krggvl55i750u9bue6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJuV8y2tnAFwNJN8IFEMcccjc2jhCT0Ww"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551308414057-evp67ch0161utpq5rm76fk5dsfciv9fo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "551308414057-dlud7uam4ja3hcmqj4ef11v66urjr876.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.janus.-5a-CyclopsGroups-1"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551308414057:android:a2c2a641ca89d2ed",
+        "android_client_info": {
+          "package_name": "com.janus.snapchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "551308414057-u49ae152l04oi9krggvl55i750u9bue6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJuV8y2tnAFwNJN8IFEMcccjc2jhCT0Ww"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551308414057-evp67ch0161utpq5rm76fk5dsfciv9fo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "551308414057-dlud7uam4ja3hcmqj4ef11v66urjr876.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.janus.-5a-CyclopsGroups-1"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

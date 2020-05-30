@@ -24,6 +24,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.janus.a2a1myplatdiarybrandanjones.R
+import com.janus.a2a1myplatdiarybrandanjones.dto.Specimen
 import kotlinx.android.synthetic.main.main_fragment.*
 import java.io.File
 import java.text.SimpleDateFormat
@@ -58,7 +59,7 @@ class MainFragment : Fragment() {
 
         viewModel.plants.observe(viewLifecycleOwner, Observer {
             Log.v(TAG, "\t\t Number of Plants Returned:: ${it.size}")
-            actPlantName.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, it))
+            actvPlantName.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, it))
         })
 
         btnTakePhoto.setOnClickListener {
@@ -67,8 +68,22 @@ class MainFragment : Fragment() {
         btnLogin.setOnClickListener{
             prepOpenImageGalary()
         }
-
+        btnSave.setOnClickListener{
+            saveSpecimen()
+        }
         prepRequestLocationUpdates()
+    }
+
+    private fun saveSpecimen() {
+        var specimen = Specimen().apply {
+            latitude = lbllatitudeValue.text.toString()
+            longitude = lbllongitudeValue.text.toString()
+            plantName = actvPlantName.text.toString()
+            description = etDescription.text.toString()
+            datePlanted = etDatePlanted.text.toString()
+
+        }
+        viewModel.save(specimen)
     }
 
     private fun prepRequestLocationUpdates() {

@@ -62,7 +62,7 @@
         app:layout_constraintTop_toBottomOf="@+id/lbllongitude" />
 
     <AutoCompleteTextView
-        android:id="@+id/actPlantName"
+        android:id="@+id/actvPlantName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/plantName"
@@ -80,11 +80,11 @@
         android:hint="@string/description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/actPlantName"
+        app:layout_constraintTop_toBottomOf="@+id/actvPlantName"
         android:autofillHints="" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/etDatePlanted"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -102,7 +102,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/editText2">
+        app:layout_constraintTop_toBottomOf="@id/etDatePlanted">
 
         <ImageButton
             android:id="@+id/btnTakePhoto"
