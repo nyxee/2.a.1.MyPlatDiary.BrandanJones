@@ -97,7 +97,7 @@ class MainFragment : Fragment() {
             AuthUI.IdpConfig.GoogleBuilder().build(),
             AuthUI.IdpConfig.FacebookBuilder().build(),
             AuthUI.IdpConfig.PhoneBuilder().build())
-
+        //TODO: ADD TWITTER, MICROSOFT, GITHUB AND YAHOO.
 
         startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers).build(), AUTH__REQUEST_CODE)
     }
