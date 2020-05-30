@@ -66,12 +66,6 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    // TODO: Implement the ViewModel
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is dashboard Fragment"
-    }
-    val text: LiveData<String> = _text
-
     init {
         fetchPlants("e")
         firestore = FirebaseFirestore.getInstance()
