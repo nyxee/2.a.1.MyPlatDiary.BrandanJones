@@ -57,8 +57,7 @@ class MainViewModel : ViewModel() {
                 // now, we have a populated shapshot
                 val allSpecimens = ArrayList<Specimen>()
                 snapshot.documents.forEach {
-                    val specimen = it.toObject(Specimen::class.java)
-                   specimen?.let {
+                    it.toObject(Specimen::class.java)?.let {
                         allSpecimens.add(it)
                     }
                 }
