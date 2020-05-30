@@ -14,16 +14,18 @@ class MainViewModel : ViewModel() {
     var plants = MutableLiveData<ArrayList<Plant>>()
     var plantService = PlantService()
     private lateinit var firestore: FirebaseFirestore
-val TAG = MainViewModel::class.java.simpleName
+    val TAG = MainViewModel::class.java.simpleName
+    var _specimens = MutableLiveData<ArrayList<Specimen>>()
+
+    internal var specimens:MutableLiveData<ArrayList<Specimen>>
+        get() { return _specimens}
+        set(value) {_specimens = value}
 
     fun fetchPlants(plantName: String) {
         System.out.println("MainViewModel::fetchPlantsts($plantName) ")
         plants = plantService.fetchPlants(plantName)
         System.out.println("MainViewModel::fetchPlantsts($plantName) :: Sixe REturned: ${plants.value}")
-        firestore = FirebaseFirestore.getInstance()
-        firestore.firestoreSettings = FirebaseFirestoreSettings.Builder()
-            .setPersistenceEnabled(true)
-            .build()
+
     }
 
     fun save(specimen: Specimen) {
@@ -40,6 +42,30 @@ val TAG = MainViewModel::class.java.simpleName
             }
     }
 
+    /**
+     * This will hear any updates from Firestore
+     */
+    private fun listenToSpecimens() {
+        firestore.collection("Specimens").addSnapshotListener { snapshot, e ->
+            // if there is an exception we want to skip.
+            if (e != null) {
+                Log.w(TAG, "Listen Failed", e)
+                return@addSnapshotListener
+            }
+            // if we are here, we did not encounter an exception
+            if (snapshot != null) {
+                // now, we have a populated shapshot
+                val allSpecimens = ArrayList<Specimen>()
+                snapshot.documents.forEach {
+                    val specimen = it.toObject(Specimen::class.java)
+                   specimen?.let {
+                        allSpecimens.add(it)
+                    }
+                }
+                _specimens.value = allSpecimens
+            }
+        }
+    }
 
     // TODO: Implement the ViewModel
     private val _text = MutableLiveData<String>().apply {
@@ -49,5 +75,10 @@ val TAG = MainViewModel::class.java.simpleName
 
     init {
         fetchPlants("e")
+        firestore = FirebaseFirestore.getInstance()
+        firestore.firestoreSettings = FirebaseFirestoreSettings.Builder()
+            .setPersistenceEnabled(true)
+            .build()
+        listenToSpecimens()
     }
 }

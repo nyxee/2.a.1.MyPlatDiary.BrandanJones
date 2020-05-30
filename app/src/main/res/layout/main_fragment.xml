@@ -53,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@+id/lbllatitudeValue" />
 
     <Spinner
-        android:id="@+id/spnSpecimen"
+        android:id="@+id/spnSpecimens"
         android:layout_width="409dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -68,7 +68,7 @@
         android:hint="@string/plantName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spnSpecimen" />
+        app:layout_constraintTop_toBottomOf="@+id/spnSpecimens" />
 
     <EditText
         android:id="@+id/etDescription"
