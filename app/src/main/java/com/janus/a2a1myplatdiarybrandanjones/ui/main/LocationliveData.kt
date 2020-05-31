@@ -22,8 +22,8 @@ class LocationliveData(var context: Context): LiveData<LocationDetails>() {
     @SuppressLint("MissingPermission")  //PROVIDED FOR IN MAINfRAGMENT.prepRequestLocationUpdates()
     override fun onActive() { //Someone is observing the LiveData
         super.onActive()
-        mFusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-            location.also {
+        mFusedLocationProviderClient.lastLocation.addOnSuccessListener {location ->
+            location?.also {
                 setLocationData(it)
             }
         }

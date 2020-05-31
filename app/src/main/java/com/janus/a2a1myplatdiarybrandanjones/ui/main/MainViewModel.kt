@@ -1,11 +1,11 @@
 package com.janus.a2a1myplatdiarybrandanjones.ui.main
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.janus.a2a1myplatdiarybrandanjones.dto.Photo
 import com.janus.a2a1myplatdiarybrandanjones.dto.Plant
 import com.janus.a2a1myplatdiarybrandanjones.dto.Specimen
 import com.janus.a2a1myplatdiarybrandanjones.service.PlantService
@@ -28,12 +28,17 @@ class MainViewModel : ViewModel() {
 
     }
 
-    fun save(specimen: Specimen) {
+    fun save(
+        specimen: Specimen,
+        photos: ArrayList<Photo>
+    ) {
         val document = firestore.collection("Specimens").document()
         specimen.specimenId = document.id
         document.set(specimen)
             .addOnSuccessListener {
-                Log.v(TAG, "\t\t\tdocument saved")
+                Log.v(TAG, "\t\t\tspecimen saved with id: ${specimen.specimenId}")
+                if (photos != null && photos.size > 0)
+                    savePhotos(specimen, photos)
             }
             .addOnFailureListener {
                 Log.e(TAG, "\t\tFAILED::::  ${it.localizedMessage}")
@@ -41,6 +46,30 @@ class MainViewModel : ViewModel() {
 
             }
     }
+
+    private fun savePhotos(specimen: Specimen, photos: ArrayList<Photo>) {
+        firestore.collection("Specimens")
+            .document(specimen.specimenId) //to update an existing specimen
+            .collection("Photos")
+            .also { collection ->
+                photos.forEach{ photo->
+                    val document =  collection.document()
+                    photo.id = document.id
+                    document.set(photo)
+                        .addOnSuccessListener {
+                            Log.v(TAG, "\t\t\tphoto saved")
+                        }
+                        .addOnFailureListener {
+                            Log.e(TAG, "\t\tFAILED::::  ${it.localizedMessage}")
+                        }
+//                    val task = collection.add(photo)
+//                    task.addOnSuccessListener {
+//                        photo.id = it.id
+//                    }
+                }
+            }
+    }
+
 
     /**
      * This will hear any updates from Firestore
