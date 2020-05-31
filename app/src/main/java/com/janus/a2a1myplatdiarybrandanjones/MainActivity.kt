@@ -108,19 +108,6 @@ class MainActivity : AppCompatActivity() {
      */
     private fun onSwipeLeft() {
         Toast.makeText(this, "Left Swipe", Toast.LENGTH_SHORT).show()
-        if (activeFragment == eventFragment) {
-            Log.v(TAG, "Left Swipe")
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, mainFragment)
-                .commitNow()
-            activeFragment = mainFragment
-        }
-    }
-    /**
-     * For swipe from the Top
-     */
-    private fun onSwipeRight() {
-        Toast.makeText(this, "Right Swipe", Toast.LENGTH_SHORT).show()
         if (activeFragment == mainFragment) {
             Log.v(TAG, "Right Swipe")
             mainFragment.storeSpecimen()
@@ -128,6 +115,19 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.container, eventFragment)
                 .commitNow()
             activeFragment = eventFragment
+        }
+    }
+    /**
+     * For swipe from the Top
+     */
+    private fun onSwipeRight() {
+        Toast.makeText(this, "Right Swipe", Toast.LENGTH_SHORT).show()
+        if (activeFragment == eventFragment) {
+            Log.v(TAG, "Left Swipe")
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, mainFragment)
+                .commitNow()
+            activeFragment = mainFragment
         }
     }
 
