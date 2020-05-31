@@ -12,7 +12,7 @@ import com.janus.a2a1myplatdiarybrandanjones.service.PlantService
 
 class MainViewModel : ViewModel() {
     var plants = MutableLiveData<ArrayList<Plant>>()
-    var plantService = PlantService()
+    var _plantService = PlantService()
     private lateinit var firestore: FirebaseFirestore
     val TAG = MainViewModel::class.java.simpleName
     var _specimens = MutableLiveData<ArrayList<Specimen>>()
@@ -26,8 +26,12 @@ class MainViewModel : ViewModel() {
         get() {return _specimen}
         set(value) {_specimen = value}
 
+    internal var plantService : PlantService
+        get() { return _plantService }
+        set(value) {_plantService = value}
+
     fun fetchPlants(plantName: String) {
-        plants = plantService.fetchPlants(plantName)
+        plants = _plantService.fetchPlants(plantName)
         System.out.println("MainViewModel::fetchPlants($plantName) :: Sixe REturned: ${plants.value}")
 
     }
