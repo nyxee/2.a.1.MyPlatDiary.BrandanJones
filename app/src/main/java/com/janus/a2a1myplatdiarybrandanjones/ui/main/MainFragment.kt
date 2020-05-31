@@ -206,7 +206,7 @@ class MainFragment : DiaryFragment() {
 
                     }
                 }
-                AUTH__REQUEST_CODE -> {
+                AUTH__REQUEST_CODE -> { //the Login Activity returns here.
                     mUser = FirebaseAuth.getInstance().currentUser
                 }
             }
