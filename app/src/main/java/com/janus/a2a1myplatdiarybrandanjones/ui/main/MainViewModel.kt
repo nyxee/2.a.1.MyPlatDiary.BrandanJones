@@ -1,19 +1,25 @@
 package com.janus.a2a1myplatdiarybrandanjones.ui.main
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.janus.a2a1myplatdiarybrandanjones.dto.Photo
 import com.janus.a2a1myplatdiarybrandanjones.dto.Plant
 import com.janus.a2a1myplatdiarybrandanjones.dto.Specimen
 import com.janus.a2a1myplatdiarybrandanjones.service.PlantService
 
 class MainViewModel : ViewModel() {
+    private var storageReferenence: StorageReference
     var plants = MutableLiveData<ArrayList<Plant>>()
     var _plantService = PlantService()
-    private lateinit var firestore: FirebaseFirestore
+    private var firestore: FirebaseFirestore
     val TAG = MainViewModel::class.java.simpleName
     var _specimens = MutableLiveData<ArrayList<Specimen>>()
     var _specimen = Specimen()
@@ -36,14 +42,14 @@ class MainViewModel : ViewModel() {
 
     }
 
-    fun save(specimen: Specimen, photos: ArrayList<Photo>) {
+    fun save(specimen: Specimen, photos: ArrayList<Photo>, user: FirebaseUser) {
         val document = firestore.collection("Specimens").document()
         specimen.specimenId = document.id
         document.set(specimen)
             .addOnSuccessListener {
                 Log.v(TAG, "\t\t\tspecimen saved with id: ${specimen.specimenId}")
                 if (photos != null && photos.size > 0)
-                    savePhotos(specimen, photos)
+                    savePhotos(specimen, photos, user)
             }
             .addOnFailureListener {
                 Log.e(TAG, "\t\tFAILED::::  ${it.localizedMessage}")
@@ -52,29 +58,47 @@ class MainViewModel : ViewModel() {
             }
     }
 
-    private fun savePhotos(specimen: Specimen, photos: ArrayList<Photo>) {
+    private fun savePhotos(specimen: Specimen, photos: ArrayList<Photo>, user: FirebaseUser) {
         firestore.collection("Specimens")
             .document(specimen.specimenId) //to update an existing specimen
             .collection("Photos")
             .also { collection ->
                 photos.forEach{ photo->
-                    val document =  collection.document()
-                    photo.id = document.id
-                    document.set(photo)
-                        .addOnSuccessListener {
-                            Log.v(TAG, "\t\t\tphoto saved")
+
+                    val photoDocumentRef =  collection.document() //CREATE THE PHOTO DOCUMENT REFERENCE
+                    photo.id = photoDocumentRef.id
+
+                    var uri = Uri.parse(photo.localUri)
+                    val imageStorageRef = storageReferenence.child("images/" + user.uid + "/" + uri.lastPathSegment)
+                    Log.v(TAG, "\t\timageStorageRef:: $imageStorageRef")
+                    val uploadTask = imageStorageRef.putFile(uri)
+                    uploadTask.addOnSuccessListener {
+                        val downloadUrl = imageStorageRef.downloadUrl
+                        downloadUrl.addOnSuccessListener {
+
+                            photo.remoteUri = it.toString()
+                            // update our Cloud Firestore with the public image URI.
+                            updatePhotoDatabase(photo, photoDocumentRef)
                         }
-                        .addOnFailureListener {
-                            Log.e(TAG, "\t\tFAILED::::  ${it.localizedMessage}")
-                        }
-//                    val task = collection.add(photo)
-//                    task.addOnSuccessListener {
-//                        photo.id = it.id
-//                    }
+                    }
+                    uploadTask.addOnFailureListener {
+                        Log.e(TAG, "Uploading Image ID:: [${photo.id }] to SpecimenID: [${specimen.specimenId}] FAILED!!")
+                    }
+                    uploadTask.addOnCanceledListener {
+                        Log.e(TAG, "Uploading Image ID:: [${photo.id }] to SpecimenID: [${specimen.specimenId}] WAS CANCELLED BY SOMETHING!!")
+                    }
                 }
             }
     }
-
+    private fun updatePhotoDatabase(photo: Photo, photoDocumentRef: DocumentReference) {
+        photoDocumentRef.set(photo)
+            .addOnSuccessListener {
+                Log.v(TAG, "\t\t\tphoto saved")
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "\t\tFAILED::::  ${it.localizedMessage}")
+            }
+    }
 
     /**
      * This will hear any updates from Firestore
@@ -106,6 +130,9 @@ class MainViewModel : ViewModel() {
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder()
             .setPersistenceEnabled(true)
             .build()
+
+        storageReferenence = FirebaseStorage.getInstance().reference
+
         listenToSpecimens()
     }
 }

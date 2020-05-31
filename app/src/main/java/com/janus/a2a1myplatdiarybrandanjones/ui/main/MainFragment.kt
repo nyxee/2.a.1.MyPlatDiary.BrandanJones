@@ -6,10 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,8 +17,6 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.firebase.ui.auth.AuthUI
@@ -31,9 +27,6 @@ import com.janus.a2a1myplatdiarybrandanjones.dto.Photo
 import com.janus.a2a1myplatdiarybrandanjones.dto.Plant
 import com.janus.a2a1myplatdiarybrandanjones.dto.Specimen
 import kotlinx.android.synthetic.main.main_fragment.*
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 //import java.util.jar.Manifest
@@ -125,11 +118,15 @@ class MainFragment : DiaryFragment() {
 
     }
     private fun saveSpecimen() {
+        if (mUser == null) {
+            login()
+        }
+        mUser ?: return
 
         storeSpecimen()
-        mViewModel.save(mSpecimen, mPhotos)
+        mViewModel.save(mSpecimen, mPhotos, mUser!!)
         mSpecimen = Specimen() //Clear Memory, and prepare phosts array for next batch of photos.
-        mPhotos = ArrayList<Photo>()
+        mPhotos = ArrayList()
     }
 
     private fun prepRequestLocationUpdates() {
