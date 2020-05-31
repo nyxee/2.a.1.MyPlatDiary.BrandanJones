@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.janus.a2a1myplatdiarybrandanjones.R
 import com.janus.a2a1myplatdiarybrandanjones.dto.Photo
+import com.janus.a2a1myplatdiarybrandanjones.dto.Plant
 import com.janus.a2a1myplatdiarybrandanjones.dto.Specimen
 import kotlinx.android.synthetic.main.main_fragment.*
 import java.io.File
@@ -40,6 +41,7 @@ import kotlin.collections.ArrayList
 //import java.util.jar.Manifest
 
 class MainFragment : Fragment() {
+    private var _plantId: Int = 0
     private var user: FirebaseUser? = null
     private val AUTH__REQUEST_CODE = 2002
     private val LOCATION_PERMISSION_REQUEST_CODE = 2001
@@ -76,10 +78,14 @@ class MainFragment : Fragment() {
             Log.v(TAG, "\t\t Number of Plants Returned:: ${it.size}")
             actvPlantName.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, it))
         })
-
         viewModel.specimens.observe(viewLifecycleOwner, Observer { specimens ->
             spnSpecimens.adapter = ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, specimens)
         })
+
+        actvPlantName.setOnItemClickListener { parent, view, position, id ->
+            val selectedPlant = parent.getItemAtPosition(position) as Plant
+            _plantId = selectedPlant.plantId
+        }
 
         btnTakePhoto.setOnClickListener {
             prepTakePhoto()
@@ -128,6 +134,7 @@ class MainFragment : Fragment() {
             plantName = actvPlantName.text.toString()
             description = etDescription.text.toString()
             datePlanted = etDatePlanted.text.toString()
+            plantId = _plantId
         }
         viewModel.save(specimen, photos)
 
