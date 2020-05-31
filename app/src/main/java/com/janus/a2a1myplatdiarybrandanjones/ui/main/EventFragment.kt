@@ -11,7 +11,7 @@ import com.janus.a2a1myplatdiarybrandanjones.R
 import com.janus.a2a1myplatdiarybrandanjones.dto.PlantEvent
 import kotlinx.android.synthetic.main.event_fragment.*
 
-class EventFragment : Fragment() {
+class EventFragment : DiaryFragment() {
 
     companion object {
         fun newInstance() = EventFragment()

@@ -21,7 +21,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.firebase.ui.auth.AuthUI
@@ -39,15 +38,12 @@ import kotlin.collections.ArrayList
 
 //import java.util.jar.Manifest
 
-class MainFragment : Fragment() {
+class MainFragment : DiaryFragment() {
     private var _mPlantId: Int = 0
     private var mUser: FirebaseUser? = null
     private val AUTH__REQUEST_CODE = 2002
     private val LOCATION_PERMISSION_REQUEST_CODE = 2001
     private val IMAGE_GALLERY_REQUEST_CODE = 2000
-    private val SAVE_IMAGE_REQUEST_CODE = 1999
-    private val CAMERA_REQUEST_CODE = 1998
-    val CAMERA_PERMISSION_REQUEST_CODE = 1997
 
 
     companion object {
@@ -58,10 +54,7 @@ class MainFragment : Fragment() {
     private lateinit var mViewModel: MainViewModel
     private lateinit var mLocationViewModel: LocationViewModel
 
-    private lateinit var mCurrentPhotoPath: String
-
     private var mPhotos = ArrayList<Photo>()
-    private var mPhotoURI: Uri? = null
     private var mSpecimen = Specimen()
 
 
@@ -170,28 +163,8 @@ class MainFragment : Fragment() {
         }
     }
 
-    /**
-     * See if we have Permission or Not.
-     */
-    private fun prepTakePhoto() {
-        if (ContextCompat.checkSelfPermission(context!!,  Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
-            takePhoto()
-        else {
-            val permissionRequest = arrayOf(Manifest.permission.CAMERA)
-            requestPermissions(permissionRequest, CAMERA_PERMISSION_REQUEST_CODE)
-        }
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when(requestCode){
-            CAMERA_PERMISSION_REQUEST_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    takePhoto()
-                else {
-                    Toast.makeText(context, "Unable To Take Photo Without Permission", Toast.LENGTH_SHORT).show()
-                }
-            }
             LOCATION_PERMISSION_REQUEST_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                     requestLocationUpdated()
@@ -199,28 +172,7 @@ class MainFragment : Fragment() {
                     Toast.makeText(context, "Unable To Update Location Without Permission", Toast.LENGTH_SHORT).show()
                 }
             }
-        }
-    }
-
-    private fun takePhoto() {
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {takePhotoIntent->
-//            takePhotoIntent.resolveActivity(context!!.packageManager)?.also {
-//                startActivityForResult(takePhotoIntent, CAMERA_REQUEST_CODE)
-//            }
-            takePhotoIntent.resolveActivity(context!!.packageManager)
-            if (takePhotoIntent == null){
-                Toast.makeText(context, "Unable To Save Photo!", Toast.LENGTH_SHORT).show()
-            }else {
-                val photoFile = createImageFile()
-                Log.v(TAG,"\t\tphotoFile:: $photoFile")
-
-                photoFile?.also {
-                    mPhotoURI = FileProvider.getUriForFile(activity!!.applicationContext, "com.janus.a2a1myplatdiarybrandanjones.fileprovider", it)
-                    Log.v(TAG,"\t\tphotoURI:: $photoFile")
-                    takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoURI)
-                    startActivityForResult(takePhotoIntent, SAVE_IMAGE_REQUEST_CODE)
-                }
-            }
+            else ->  super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 
@@ -268,13 +220,6 @@ class MainFragment : Fragment() {
     private fun showImage() {
 
         imgPlant.setImageURI(mPhotoURI)
-    }
-    private fun createImageFile(): File?{
-        val timeStamp = SimpleDateFormat("HHmmss_ddMMYYYY", Locale.getDefault()).format(Date())
-        val storageDir = context!!.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile("PlantDiary$timeStamp",".jpg", storageDir).apply {
-            mCurrentPhotoPath = absolutePath
-        }
     }
 
     /**
