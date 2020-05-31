@@ -15,4 +15,8 @@
     <string name="facebook_application_id" translatable="false">641492793072140</string>
     <!-- Facebook Application ID, prefixed by 'fb'. Enables Chrome Custom tabs. -->
     <string name="facebook_login_protocol_scheme" translatable="false">fb641492793072140</string>
+    <string name="eventType">Event Type</string>
+    <string name="_0">0</string>
+    <string name="units">Units (Gallons,Cups, etc</string>
+    <string name="date">Event Date</string>
 </resources>

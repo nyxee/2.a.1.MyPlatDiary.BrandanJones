@@ -22,9 +22,8 @@ class MainViewModel : ViewModel() {
         set(value) {_specimens = value}
 
     fun fetchPlants(plantName: String) {
-        System.out.println("MainViewModel::fetchPlantsts($plantName) ")
         plants = plantService.fetchPlants(plantName)
-        System.out.println("MainViewModel::fetchPlantsts($plantName) :: Sixe REturned: ${plants.value}")
+        System.out.println("MainViewModel::fetchPlants($plantName) :: Sixe REturned: ${plants.value}")
 
     }
 
