@@ -11,7 +11,7 @@ import com.janus.a2a1myplatdiarybrandanjones.R
 import com.janus.a2a1myplatdiarybrandanjones.dto.PlantEvent
 import kotlinx.android.synthetic.main.event_fragment.*
 
-class EventFragment : Fragment() {
+class EventFragment : DiaryFragment() {
 
     companion object {
         fun newInstance() = EventFragment()
@@ -36,6 +36,10 @@ class EventFragment : Fragment() {
         btnSaveEvent.setOnClickListener {
             savePlantEvent()
         }
+
+        btnTakeEventPhoto.setOnClickListener {
+            prepTakePhoto()
+        }
     }
 
     private fun savePlantEvent() {
@@ -48,8 +52,20 @@ class EventFragment : Fragment() {
                 quantity = qString.toDouble()
             units = actvUnits.text.toString()
             date = edtDate.text.toString()
+            if (mPhotoURI != null)
+                localPhotoURI = mPhotoURI.toString()
             viewModel.specimen.plantEvents.add(this)
+            clearAll()
         }
+    }
+
+    private fun clearAll() {
+        actvEventType.setText("")
+        edtDesciption.setText("")
+        edtQuantity.setText("")
+        actvUnits.setText("")
+        edtDate.setText("")
+        mPhotoURI = null
     }
 
 }
