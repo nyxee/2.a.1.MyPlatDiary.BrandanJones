@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import com.janus.a2a1myplatdiarybrandanjones.R
 import com.janus.a2a1myplatdiarybrandanjones.dto.PlantEvent
 import kotlinx.android.synthetic.main.event_fragment.*
@@ -16,7 +17,7 @@ class EventFragment : Fragment() {
         fun newInstance() = EventFragment()
     }
 
-    private lateinit var viewModel: EventViewModel
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,7 +28,10 @@ class EventFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(EventViewModel::class.java)
+        //viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        activity?.let {
+            viewModel = ViewModelProvider(it).get(MainViewModel::class.java)
+        }
         // TODO: Use the ViewModel
         btnSaveEvent.setOnClickListener {
             savePlantEvent()
@@ -40,10 +44,11 @@ class EventFragment : Fragment() {
             type = actvEventType.text.toString()
             descriptiom = edtDesciption.text.toString()
             val qString = edtQuantity.text.toString()
-            if (qString.length > 0)
+            if (qString.isNotEmpty())
                 quantity = qString.toDouble()
             units = actvUnits.text.toString()
             date = edtDate.text.toString()
+            viewModel.specimen.plantEvents.add(this)
         }
     }
 

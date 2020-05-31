@@ -2,25 +2,37 @@ package com.janus.a2a1myplatdiarybrandanjones
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.Toast
 import androidx.core.view.GestureDetectorCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.janus.a2a1myplatdiarybrandanjones.ui.main.EventFragment
 import com.janus.a2a1myplatdiarybrandanjones.ui.main.MainFragment
+import com.janus.a2a1myplatdiarybrandanjones.ui.main.MainViewModel
 import kotlin.math.abs
 
 class MainActivity : AppCompatActivity() {
-
+    val TAG = MainActivity::class.simpleName
     private lateinit var detector: GestureDetectorCompat
+    private lateinit var eventFragment: EventFragment
+    private lateinit var mainFragment: MainFragment
+    private lateinit var activeFragment: Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
+        eventFragment = EventFragment.newInstance()
+        mainFragment = MainFragment.newInstance()
+        //val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, MainFragment.newInstance())
+                    .replace(R.id.container, mainFragment)
                     .commitNow()
+            activeFragment = mainFragment
         }
 
         detector = GestureDetectorCompat(this, DiaryGestureListener())
@@ -96,17 +108,27 @@ class MainActivity : AppCompatActivity() {
      */
     private fun onSwipeLeft() {
         Toast.makeText(this, "Left Swipe", Toast.LENGTH_SHORT).show()
-
+        if (activeFragment == eventFragment) {
+            Log.v(TAG, "Left Swipe")
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, mainFragment)
+                .commitNow()
+            activeFragment = mainFragment
+        }
     }
     /**
      * For swipe from the Top
      */
     private fun onSwipeRight() {
         Toast.makeText(this, "Right Swipe", Toast.LENGTH_SHORT).show()
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.container, EventFragment.newInstance())
-            .commitNow()
-
+        if (activeFragment == mainFragment) {
+            Log.v(TAG, "Right Swipe")
+            mainFragment.storeSpecimen()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, eventFragment)
+                .commitNow()
+            activeFragment = eventFragment
+        }
     }
 
 }

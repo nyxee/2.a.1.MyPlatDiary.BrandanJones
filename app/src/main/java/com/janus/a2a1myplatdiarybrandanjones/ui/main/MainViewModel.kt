@@ -16,10 +16,15 @@ class MainViewModel : ViewModel() {
     private lateinit var firestore: FirebaseFirestore
     val TAG = MainViewModel::class.java.simpleName
     var _specimens = MutableLiveData<ArrayList<Specimen>>()
+    var _specimen = Specimen()
 
     internal var specimens:MutableLiveData<ArrayList<Specimen>>
         get() { return _specimens}
         set(value) {_specimens = value}
+
+    internal var specimen: Specimen
+        get() {return _specimen}
+        set(value) {_specimen = value}
 
     fun fetchPlants(plantName: String) {
         plants = plantService.fetchPlants(plantName)
@@ -27,10 +32,7 @@ class MainViewModel : ViewModel() {
 
     }
 
-    fun save(
-        specimen: Specimen,
-        photos: ArrayList<Photo>
-    ) {
+    fun save(specimen: Specimen, photos: ArrayList<Photo>) {
         val document = firestore.collection("Specimens").document()
         specimen.specimenId = document.id
         document.set(specimen)

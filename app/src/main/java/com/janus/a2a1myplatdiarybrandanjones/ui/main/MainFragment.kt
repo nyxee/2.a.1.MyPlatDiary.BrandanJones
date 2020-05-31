@@ -5,7 +5,6 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -41,8 +40,8 @@ import kotlin.collections.ArrayList
 //import java.util.jar.Manifest
 
 class MainFragment : Fragment() {
-    private var _plantId: Int = 0
-    private var user: FirebaseUser? = null
+    private var _mPlantId: Int = 0
+    private var mUser: FirebaseUser? = null
     private val AUTH__REQUEST_CODE = 2002
     private val LOCATION_PERMISSION_REQUEST_CODE = 2001
     private val IMAGE_GALLERY_REQUEST_CODE = 2000
@@ -56,13 +55,14 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-    private lateinit var viewModel: MainViewModel
-    private lateinit var locationViewModel: LocationViewModel
+    private lateinit var mViewModel: MainViewModel
+    private lateinit var mLocationViewModel: LocationViewModel
 
-    private lateinit var currentPhotoPath: String
+    private lateinit var mCurrentPhotoPath: String
 
-    private var photos = ArrayList<Photo>()
-    private var photoURI: Uri? = null
+    private var mPhotos = ArrayList<Photo>()
+    private var mPhotoURI: Uri? = null
+    private var mSpecimen = Specimen()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -72,19 +72,23 @@ class MainFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        viewModel.plants.observe(viewLifecycleOwner, Observer {
+        //mViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        activity?.let {
+            mViewModel = ViewModelProvider(it).get(MainViewModel::class.java)
+        }
+
+        mViewModel.plants.observe(viewLifecycleOwner, Observer {
             Log.v(TAG, "\t\t Number of Plants Returned:: ${it.size}")
             actvPlantName.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, it))
         })
-        viewModel.specimens.observe(viewLifecycleOwner, Observer { specimens ->
+        mViewModel.specimens.observe(viewLifecycleOwner, Observer { specimens ->
             spnSpecimens.adapter = ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, specimens)
         })
 
         actvPlantName.setOnItemClickListener { parent, view, position, id ->
             val selectedPlant = parent.getItemAtPosition(position) as Plant
-            _plantId = selectedPlant.plantId
+            _mPlantId = selectedPlant.plantId
         }
 
         btnTakePhoto.setOnClickListener {
@@ -93,7 +97,7 @@ class MainFragment : Fragment() {
         btnLogin.setOnClickListener{
             //prepOpenImageGalary()
 
-            if (user == null)
+            if (mUser == null)
                 login()
             else
                 signOut() //THIS IS FOR TESTING PURPOSES, I WILL USE A LOGOUT MENU.
@@ -128,18 +132,11 @@ class MainFragment : Fragment() {
 
     }
     private fun saveSpecimen() {
-        var specimen = Specimen().apply {
-            latitude = lbllatitudeValue.text.toString()
-            longitude = lbllongitudeValue.text.toString()
-            plantName = actvPlantName.text.toString()
-            description = etDescription.text.toString()
-            datePlanted = etDatePlanted.text.toString()
-            plantId = _plantId
-        }
-        viewModel.save(specimen, photos)
 
-        specimen = Specimen() //Clear Memory, and prepare phosts array for next batch of photos.
-        photos = ArrayList<Photo>()
+        storeSpecimen()
+        mViewModel.save(mSpecimen, mPhotos)
+        mSpecimen = Specimen() //Clear Memory, and prepare phosts array for next batch of photos.
+        mPhotos = ArrayList<Photo>()
     }
 
     private fun prepRequestLocationUpdates() {
@@ -159,8 +156,8 @@ class MainFragment : Fragment() {
     }
 
     private fun requestLocationUpdated() {
-        locationViewModel = ViewModelProvider(this).get(LocationViewModel::class.java)
-        locationViewModel.getLocationLiveData().observe(viewLifecycleOwner, Observer {
+        mLocationViewModel = ViewModelProvider(this).get(LocationViewModel::class.java)
+        mLocationViewModel.getLocationLiveData().observe(viewLifecycleOwner, Observer {
             lbllatitudeValue.text = it.latitude
             lbllongitudeValue.text = it.longitude
         })
@@ -218,9 +215,9 @@ class MainFragment : Fragment() {
                 Log.v(TAG,"\t\tphotoFile:: $photoFile")
 
                 photoFile?.also {
-                    photoURI = FileProvider.getUriForFile(activity!!.applicationContext, "com.janus.a2a1myplatdiarybrandanjones.fileprovider", it)
+                    mPhotoURI = FileProvider.getUriForFile(activity!!.applicationContext, "com.janus.a2a1myplatdiarybrandanjones.fileprovider", it)
                     Log.v(TAG,"\t\tphotoURI:: $photoFile")
-                    takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoURI)
                     startActivityForResult(takePhotoIntent, SAVE_IMAGE_REQUEST_CODE)
                 }
             }
@@ -239,11 +236,11 @@ class MainFragment : Fragment() {
                 SAVE_IMAGE_REQUEST_CODE -> {
                     Toast.makeText(context, "Image Saved", Toast.LENGTH_SHORT).show()
                     showImage()
-                    val photo = Photo(localUri = photoURI.toString(), description = etDescription.text.toString() )
+                    val photo = Photo(localUri = mPhotoURI.toString(), description = etDescription.text.toString() )
                     Log.v(TAG, "\t\tStored Photo in local list")
 
-                    photos.add(photo)
-                    photos.forEach {
+                    mPhotos.add(photo)
+                    mPhotos.forEach {
                         Log.v(TAG, "\t\t$it")
                     }
                 }
@@ -258,7 +255,7 @@ class MainFragment : Fragment() {
                     }
                 }
                 AUTH__REQUEST_CODE -> {
-                    user = FirebaseAuth.getInstance().currentUser
+                    mUser = FirebaseAuth.getInstance().currentUser
                 }
             }
     }
@@ -270,13 +267,28 @@ class MainFragment : Fragment() {
 
     private fun showImage() {
 
-        imgPlant.setImageURI(photoURI)
+        imgPlant.setImageURI(mPhotoURI)
     }
     private fun createImageFile(): File?{
         val timeStamp = SimpleDateFormat("HHmmss_ddMMYYYY", Locale.getDefault()).format(Date())
         val storageDir = context!!.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile("PlantDiary$timeStamp",".jpg", storageDir).apply {
-            currentPhotoPath = absolutePath
+            mCurrentPhotoPath = absolutePath
         }
+    }
+
+    /**
+     * this function takes all info in our views and some from the Plant Entity and saves it in our local specimen object and puts it in the viewModel.
+     */
+    fun storeSpecimen() {
+        mSpecimen.apply {
+            plantName = actvPlantName.text.toString()
+            description = etDescription.text.toString()
+            datePlanted = etDatePlanted.text.toString()
+            plantId = _mPlantId
+            latitude = lbllatitudeValue.text.toString()
+            longitude = lbllongitudeValue.text.toString()
+        }
+        mViewModel.specimen = mSpecimen
     }
 }
