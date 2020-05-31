@@ -12,26 +12,31 @@ import com.janus.a2a1myplatdiarybrandanjones.service.PlantService
 
 class MainViewModel : ViewModel() {
     var plants = MutableLiveData<ArrayList<Plant>>()
-    var plantService = PlantService()
+    var _plantService = PlantService()
     private lateinit var firestore: FirebaseFirestore
     val TAG = MainViewModel::class.java.simpleName
     var _specimens = MutableLiveData<ArrayList<Specimen>>()
+    var _specimen = Specimen()
 
     internal var specimens:MutableLiveData<ArrayList<Specimen>>
         get() { return _specimens}
         set(value) {_specimens = value}
 
+    internal var specimen: Specimen
+        get() {return _specimen}
+        set(value) {_specimen = value}
+
+    internal var plantService : PlantService
+        get() { return _plantService }
+        set(value) {_plantService = value}
+
     fun fetchPlants(plantName: String) {
-        System.out.println("MainViewModel::fetchPlantsts($plantName) ")
-        plants = plantService.fetchPlants(plantName)
-        System.out.println("MainViewModel::fetchPlantsts($plantName) :: Sixe REturned: ${plants.value}")
+        plants = _plantService.fetchPlants(plantName)
+        System.out.println("MainViewModel::fetchPlants($plantName) :: Sixe REturned: ${plants.value}")
 
     }
 
-    fun save(
-        specimen: Specimen,
-        photos: ArrayList<Photo>
-    ) {
+    fun save(specimen: Specimen, photos: ArrayList<Photo>) {
         val document = firestore.collection("Specimens").document()
         specimen.specimenId = document.id
         document.set(specimen)
