@@ -6,7 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.janus.a2a1myplatdiarybrandanjones.R
 import com.janus.a2a1myplatdiarybrandanjones.dto.PlantEvent
 import kotlinx.android.synthetic.main.event_fragment.*
@@ -40,6 +43,12 @@ class EventFragment : DiaryFragment() {
         btnTakeEventPhoto.setOnClickListener {
             prepTakePhoto()
         }
+
+        rvEvents.hasFixedSize()
+        rvEvents.layoutManager = LinearLayoutManager(context)
+        rvEvents.itemAnimator = DefaultItemAnimator()
+        rvEvents.adapter = EventAdapter(viewModel.specimen.plantEvents, R.layout.rowlayout)
+
     }
 
     private fun savePlantEvent() {
@@ -56,6 +65,7 @@ class EventFragment : DiaryFragment() {
                 localPhotoURI = mPhotoURI.toString()
             viewModel.specimen.plantEvents.add(this)
             clearAll()
+            rvEvents.adapter!!.notifyDataSetChanged()
         }
     }
 
