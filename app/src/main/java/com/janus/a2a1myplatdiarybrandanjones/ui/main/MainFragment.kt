@@ -20,6 +20,8 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -27,6 +29,7 @@ import com.janus.a2a1myplatdiarybrandanjones.MainActivity
 import com.janus.a2a1myplatdiarybrandanjones.R
 import com.janus.a2a1myplatdiarybrandanjones.dto.Photo
 import com.janus.a2a1myplatdiarybrandanjones.dto.Plant
+import com.janus.a2a1myplatdiarybrandanjones.dto.PlantEvent
 import com.janus.a2a1myplatdiarybrandanjones.dto.Specimen
 import kotlinx.android.synthetic.main.main_fragment.*
 import kotlin.collections.ArrayList
@@ -51,6 +54,7 @@ class MainFragment : DiaryFragment() {
 
     private var mPhotos = ArrayList<Photo>()
     private var mSpecimen = Specimen()
+    private var _events = ArrayList<PlantEvent>()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -68,10 +72,17 @@ class MainFragment : DiaryFragment() {
 
         mViewModel.plants.observe(viewLifecycleOwner, Observer {
             Log.v(TAG, "\t\t Number of Plants Returned:: ${it.size}")
-            actvPlantName.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, it))
+            actvPlantName.setAdapter(
+                ArrayAdapter(
+                    context!!,
+                    R.layout.support_simple_spinner_dropdown_item,
+                    it
+                )
+            )
         })
         mViewModel.specimens.observe(viewLifecycleOwner, Observer { specimens ->
-            spnSpecimens.adapter = ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, specimens)
+            spnSpecimens.adapter =
+                ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, specimens)
         })
 
         actvPlantName.setOnItemClickListener { parent, view, position, id ->
@@ -82,7 +93,7 @@ class MainFragment : DiaryFragment() {
         btnTakePhoto.setOnClickListener {
             prepTakePhoto()
         }
-        btnLogin.setOnClickListener{
+        btnLogin.setOnClickListener {
             //prepOpenImageGalary()
 
             if (mUser == null)
@@ -90,7 +101,7 @@ class MainFragment : DiaryFragment() {
             else
                 signOut() //THIS IS FOR TESTING PURPOSES, I WILL USE A LOGOUT MENU.
         }
-        btnSave.setOnClickListener{
+        btnSave.setOnClickListener {
             saveSpecimen()
         }
         btnForward.setOnClickListener {
@@ -99,32 +110,11 @@ class MainFragment : DiaryFragment() {
         prepRequestLocationUpdates()
 
         spnSpecimens.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            /**
-             * Callback method to be invoked when the selection disappears from this
-             * view. The selection can disappear for instance when touch is activated
-             * or when the adapter becomes empty.
-             *
-             * @param parent The AdapterView that now contains no selected item.
-             */
+
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
-            /**
-             *
-             * Callback method to be invoked when an item in this view has been
-             * selected. This callback is invoked only when the newly selected
-             * position is different from the previously selected position or if
-             * there was no selected item.
-             *
-             * Implementers can call getItemAtPosition(position) if they need to access the
-             * data associated with the selected item.
-             *
-             * @param parent The AdapterView where the selection happened
-             * @param view The view within the AdapterView that was clicked
-             * @param position The position of the view in the adapter
-             * @param id The row id of the item that is selected
-             */
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 mSpecimen = parent?.getItemAtPosition(position) as Specimen
                 // use this specimen object to populate our UI fields
@@ -137,16 +127,36 @@ class MainFragment : DiaryFragment() {
             }
         }
 
+        with(rvEventsForSpecimens) {
+            hasFixedSize()
+            layoutManager = LinearLayoutManager(context)
+            itemAnimator = DefaultItemAnimator()
+            adapter = EventsAdapter(_events, R.layout.rowlayout)
+        }
+
+        mViewModel.events.observe(viewLifecycleOwner, Observer{ events ->
+            // remove everthing that is in there.
+            _events.removeAll(_events)
+            // update with the new events that we have observed.
+            _events.addAll(events)
+            Log.v(TAG, "\t\t CHECKED EVENTS AND WE SHOULD HAVE THEM ON THE RECYCLERVIEW -- NUMBER: [${_events.size}]")
+            // tell the recycler view to update.
+            rvEventsForSpecimens.adapter!!.notifyDataSetChanged()
+        })
     }
 
     private fun login() {
+        FirebaseAuth.getInstance().currentUser?.let {
+            mUser = it
+            return //just return if tthe user is alreay logged in.
+        } //lets check if the user isnt a;ready logged in..
+
         val providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
             AuthUI.IdpConfig.GoogleBuilder().build(),
             AuthUI.IdpConfig.FacebookBuilder().build(),
             AuthUI.IdpConfig.PhoneBuilder().build())
         //TODO: ADD TWITTER, MICROSOFT, GITHUB AND YAHOO.
-
         startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers).build(), AUTH__REQUEST_CODE)
     }
 
@@ -227,7 +237,7 @@ class MainFragment : DiaryFragment() {
                         Log.v(TAG, "\t\t$it")
                     }
                 }
-                IMAGE_GALLERY_REQUEST_CODE ->{
+                IMAGE_GALLERY_REQUEST_CODE ->{ //TODO: we need to do something else here.
                     if (bundle != null && bundle.data != null) {
                         val image = bundle.data
                         //TODO: the linese below require AndroidP.
@@ -235,7 +245,7 @@ class MainFragment : DiaryFragment() {
 //                        val bitmap = ImageDecoder.decodeBitmap(source)
 //                        imgPlant.setImageBitmap(bitmap)
                         //TODO: isnt the line below enough:
-                        imgPlant.setImageURI(image)
+//                        imgPlant.setImageURI(image)
 
                     }
                 }
@@ -245,14 +255,14 @@ class MainFragment : DiaryFragment() {
             }
     }
 
-    private fun showImage(bundle: Intent?) {
+    private fun showImage(bundle: Intent?) { //TODO: we need to do something else here.
         val imageBitMap = bundle!!.extras!!.get("data") as Bitmap
-        imgPlant.setImageBitmap(imageBitMap)
+//        imgPlant.setImageBitmap(imageBitMap)
     }
 
-    private fun showImage() {
+    private fun showImage() { //TODO: we need to do something else here.
 
-        imgPlant.setImageURI(mPhotoURI)
+//        imgPlant.setImageURI(mPhotoURI)
     }
 
     internal fun saveSpecimen() {

@@ -137,8 +137,8 @@
             />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imgPlant"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvEventsForSpecimens"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -151,8 +151,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:srcCompat="@drawable/art1"
-        android:contentDescription="@string/later" />
+        tools:listitem="@layout/rowlayout"
+       />
 
 <!--    android:src="@android:mipmap/sym_def_app_icon"-->
 

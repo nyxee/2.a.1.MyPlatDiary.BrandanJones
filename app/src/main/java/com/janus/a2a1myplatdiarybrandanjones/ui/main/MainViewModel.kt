@@ -49,20 +49,28 @@ class MainViewModel : ViewModel() {
     }
     internal fun fetchEvents(){
         firestore.collection("Specimens").document(specimen.specimenId)
-            .collection("Events").also {eventsCollection->
+            .collection("Event").also {eventsCollection->
                 eventsCollection.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                    querySnapshot?.toObjects(PlantEvent::class.java).also {
-                        _events.postValue(it!!)
+                    querySnapshot?.toObjects(PlantEvent::class.java)?.also {
+                        //Log.v(TAG, "\t\tGot ${it!!.size} Events From FireBase for SpecimenID: ${specimen.specimenId} ")
+                        _events.postValue(it)
                     }
                 }
             }
     }
+    //OK:: 1EG0AAg20s7kCzTYKgUe, 1jT1IrlaboAcDiyggvKb,
     internal fun save(event: PlantEvent) {
         firestore.collection("Specimens")
             .document(specimen.specimenId)
             .collection("Event").document().also {eventDocRef->
                 event.id = eventDocRef.id    //save the ID in our event object then store it in FB.
                 eventDocRef.set(event)
+                    .addOnFailureListener {
+                        Log.e(TAG, "Failed to Save Event")
+                    }
+                    .addOnSuccessListener {
+                        Log.v(TAG, "\t\tSaved Event to Specimen.specimenId:: ${specimen.specimenId}")
+                    }
             }
 
     }

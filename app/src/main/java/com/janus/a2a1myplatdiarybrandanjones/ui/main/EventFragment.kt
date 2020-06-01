@@ -47,7 +47,7 @@ class EventFragment : DiaryFragment() {
         rvEvents.hasFixedSize()
         rvEvents.layoutManager = LinearLayoutManager(context)
         rvEvents.itemAnimator = DefaultItemAnimator()
-        rvEvents.adapter = EventAdapter(viewModel.specimen.plantEvents, R.layout.rowlayout)
+        rvEvents.adapter = EventsAdapter(viewModel.specimen.plantEvents, R.layout.rowlayout)
 
     }
 

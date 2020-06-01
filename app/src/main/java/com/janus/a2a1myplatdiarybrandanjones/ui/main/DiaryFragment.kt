@@ -85,22 +85,22 @@ open class DiaryFragment: Fragment() {
         }
     }
 
-    inner class EventAdapter(val events: List<PlantEvent>,  val itemLayout: Int ):
-        RecyclerView.Adapter<EventViewHolder>(){
+    inner class EventsAdapter(val events: List<PlantEvent>, val itemLayout: Int ):
+        RecyclerView.Adapter<EventsViewHolder>(){
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventsViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(itemLayout, parent,false)
-            return EventViewHolder(view)
+            return EventsViewHolder(view)
         }
 
         override fun getItemCount() = events.size
 
 
-        override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: EventsViewHolder, position: Int) {
             holder.updateEvent(events[position])
         }
     }
-    inner class EventViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    inner class EventsViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         private val imgEventThumbnail:ImageView = itemView.findViewById(R.id.imgEventThumbnail)
         private val lblEventInfo:TextView = itemView.findViewById(R.id.lblEventInfo)
 
