@@ -52,7 +52,7 @@ class MainViewModel : ViewModel() {
             .collection("Event").also {eventsCollection->
                 eventsCollection.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     querySnapshot?.toObjects(PlantEvent::class.java)?.also {
-                        //Log.v(TAG, "\t\tGot ${it!!.size} Events From FireBase for SpecimenID: ${specimen.specimenId} ")
+//                        Log.v(TAG, "\t\tGot ${it!!.size} Events From FireBase for SpecimenID: ${specimen.specimenId} ")
                         _events.postValue(it)
                     }
                 }

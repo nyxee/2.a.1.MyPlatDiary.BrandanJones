@@ -57,8 +57,7 @@ class MainFragment : DiaryFragment() {
     private var _events = ArrayList<PlantEvent>()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.main_fragment, container, false)
     }
 
@@ -72,17 +71,10 @@ class MainFragment : DiaryFragment() {
 
         mViewModel.plants.observe(viewLifecycleOwner, Observer {
             Log.v(TAG, "\t\t Number of Plants Returned:: ${it.size}")
-            actvPlantName.setAdapter(
-                ArrayAdapter(
-                    context!!,
-                    R.layout.support_simple_spinner_dropdown_item,
-                    it
-                )
-            )
+            actvPlantName.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, it))
         })
         mViewModel.specimens.observe(viewLifecycleOwner, Observer { specimens ->
-            spnSpecimens.adapter =
-                ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, specimens)
+            spnSpecimens.adapter = ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, specimens)
         })
 
         actvPlantName.setOnItemClickListener { parent, view, position, id ->
@@ -105,10 +97,12 @@ class MainFragment : DiaryFragment() {
             saveSpecimen()
         }
         btnForward.setOnClickListener {
+            Log.v(TAG, "\t\tbtnForward->()-> Go Into Events With For New Specimen?? ")
             (activity as MainActivity).onSwipeLeft()
         }
         prepRequestLocationUpdates()
 
+        Log.v(TAG, "\t\tOnCreateActivity()-> Specimen in Spinner Should Be Selected..")
         spnSpecimens.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -168,9 +162,7 @@ class MainFragment : DiaryFragment() {
                     Log.e(TAG, "\t\tFAILED TO COMPLETE LOGOUT")
                 if (it.isComplete)
                     Log.e(TAG, "\t\tLOGGED OUT COMPLETED SUCCESSFULLY")
-
             }
-
     }
 
     private fun prepRequestLocationUpdates() {
