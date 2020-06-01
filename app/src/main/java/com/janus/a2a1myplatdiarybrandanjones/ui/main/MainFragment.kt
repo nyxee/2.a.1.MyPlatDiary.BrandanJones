@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -15,7 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -173,7 +173,7 @@ class MainFragment : DiaryFragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.P)
+//    @RequiresApi(Build.VERSION_CODES.P)
     override fun onActivityResult(requestCode: Int, resultCode: Int, bundle: Intent?) {
         super.onActivityResult(requestCode, resultCode, bundle)
         if (resultCode == RESULT_OK)
@@ -197,9 +197,11 @@ class MainFragment : DiaryFragment() {
                     if (bundle != null && bundle.data != null) {
                         val image = bundle.data
                         //TODO: the linese below require AndroidP.
-                        val source = ImageDecoder.createSource(activity!!.contentResolver, image!!)
-                        val bitmap = ImageDecoder.decodeBitmap(source)
-                        imgPlant.setImageBitmap(bitmap)
+//                        val source = ImageDecoder.createSource(activity!!.contentResolver, image!!)
+//                        val bitmap = ImageDecoder.decodeBitmap(source)
+//                        imgPlant.setImageBitmap(bitmap)
+                        //TODO: isnt the line below enough:
+                        imgPlant.setImageURI(image)
 
                     }
                 }
