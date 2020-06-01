@@ -127,6 +127,14 @@
             android:layout_weight="1"
             android:src="@drawable/ic_login"
             android:contentDescription="@string/later" />
+        <ImageButton
+            android:id="@+id/btnForward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:src="@drawable/ic_forward_arrow"
+            android:contentDescription="@string/save"
+            />
     </LinearLayout>
 
     <ImageView

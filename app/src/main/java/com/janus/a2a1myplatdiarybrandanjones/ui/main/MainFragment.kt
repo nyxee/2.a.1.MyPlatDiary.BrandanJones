@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.janus.a2a1myplatdiarybrandanjones.MainActivity
 import com.janus.a2a1myplatdiarybrandanjones.R
 import com.janus.a2a1myplatdiarybrandanjones.dto.Photo
 import com.janus.a2a1myplatdiarybrandanjones.dto.Plant
@@ -91,6 +92,9 @@ class MainFragment : DiaryFragment() {
         btnSave.setOnClickListener{
             saveSpecimen()
         }
+        btnForward.setOnClickListener {
+            (activity as MainActivity).onSwipeLeft()
+        }
         prepRequestLocationUpdates()
     }
 
@@ -116,17 +120,6 @@ class MainFragment : DiaryFragment() {
 
             }
 
-    }
-    private fun saveSpecimen() {
-        if (mUser == null) {
-            login()
-        }
-        mUser ?: return
-
-        storeSpecimen()
-        mViewModel.save(mSpecimen, mPhotos, mUser!!)
-        mSpecimen = Specimen() //Clear Memory, and prepare phosts array for next batch of photos.
-        mPhotos = ArrayList()
     }
 
     private fun prepRequestLocationUpdates() {
@@ -221,10 +214,22 @@ class MainFragment : DiaryFragment() {
         imgPlant.setImageURI(mPhotoURI)
     }
 
+    internal fun saveSpecimen() {
+        if (mUser == null) {
+            login()
+        }
+        mUser ?: return
+
+        storeSpecimen()
+        mViewModel.save(mSpecimen, mPhotos, mUser!!)
+        mSpecimen = Specimen() //Clear Memory, and prepare phosts array for next batch of photos.
+        mPhotos = ArrayList()
+    }
+
     /**
      * this function takes all info in our views and some from the Plant Entity and saves it in our local specimen object and puts it in the viewModel.
      */
-    fun storeSpecimen() {
+    internal fun storeSpecimen() {
         mSpecimen.apply {
             plantName = actvPlantName.text.toString()
             description = etDescription.text.toString()
