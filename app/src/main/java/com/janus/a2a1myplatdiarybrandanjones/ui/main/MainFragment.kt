@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -13,18 +14,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.janus.a2a1myplatdiarybrandanjones.MainActivity
 import com.janus.a2a1myplatdiarybrandanjones.R
 import com.janus.a2a1myplatdiarybrandanjones.dto.Photo
 import com.janus.a2a1myplatdiarybrandanjones.dto.Plant
+import com.janus.a2a1myplatdiarybrandanjones.dto.PlantEvent
 import com.janus.a2a1myplatdiarybrandanjones.dto.Specimen
 import kotlinx.android.synthetic.main.main_fragment.*
 import kotlin.collections.ArrayList
@@ -49,10 +54,10 @@ class MainFragment : DiaryFragment() {
 
     private var mPhotos = ArrayList<Photo>()
     private var mSpecimen = Specimen()
+    private var _events = ArrayList<PlantEvent>()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.main_fragment, container, false)
     }
 
@@ -80,7 +85,7 @@ class MainFragment : DiaryFragment() {
         btnTakePhoto.setOnClickListener {
             prepTakePhoto()
         }
-        btnLogin.setOnClickListener{
+        btnLogin.setOnClickListener {
             //prepOpenImageGalary()
 
             if (mUser == null)
@@ -88,20 +93,64 @@ class MainFragment : DiaryFragment() {
             else
                 signOut() //THIS IS FOR TESTING PURPOSES, I WILL USE A LOGOUT MENU.
         }
-        btnSave.setOnClickListener{
+        btnSave.setOnClickListener {
             saveSpecimen()
         }
+        btnForward.setOnClickListener {
+            Log.v(TAG, "\t\tbtnForward->()-> Go Into Events With For New Specimen?? ")
+            (activity as MainActivity).onSwipeLeft()
+        }
         prepRequestLocationUpdates()
+
+        Log.v(TAG, "\t\tOnCreateActivity()-> Specimen in Spinner Should Be Selected..")
+        spnSpecimens.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                mSpecimen = parent?.getItemAtPosition(position) as Specimen
+                // use this specimen object to populate our UI fields
+                actvPlantName.setText(mSpecimen.plantName)
+                etDescription.setText(mSpecimen.description)
+                etDatePlanted.setText(mSpecimen.datePlanted)
+                mViewModel.specimen = mSpecimen
+                // trigger an update of the events for this specimen.
+                mViewModel.fetchEvents()
+            }
+        }
+
+        with(rvEventsForSpecimens) {
+            hasFixedSize()
+            layoutManager = LinearLayoutManager(context)
+            itemAnimator = DefaultItemAnimator()
+            adapter = EventsAdapter(_events, R.layout.rowlayout)
+        }
+
+        mViewModel.events.observe(viewLifecycleOwner, Observer{ events ->
+            // remove everthing that is in there.
+            _events.removeAll(_events)
+            // update with the new events that we have observed.
+            _events.addAll(events)
+            Log.v(TAG, "\t\t CHECKED EVENTS AND WE SHOULD HAVE THEM ON THE RECYCLERVIEW -- NUMBER: [${_events.size}]")
+            // tell the recycler view to update.
+            rvEventsForSpecimens.adapter!!.notifyDataSetChanged()
+        })
     }
 
     private fun login() {
+        FirebaseAuth.getInstance().currentUser?.let {
+            mUser = it
+            return //just return if tthe user is alreay logged in.
+        } //lets check if the user isnt a;ready logged in..
+
         val providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
             AuthUI.IdpConfig.GoogleBuilder().build(),
             AuthUI.IdpConfig.FacebookBuilder().build(),
             AuthUI.IdpConfig.PhoneBuilder().build())
         //TODO: ADD TWITTER, MICROSOFT, GITHUB AND YAHOO.
-
         startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(providers).build(), AUTH__REQUEST_CODE)
     }
 
@@ -113,20 +162,7 @@ class MainFragment : DiaryFragment() {
                     Log.e(TAG, "\t\tFAILED TO COMPLETE LOGOUT")
                 if (it.isComplete)
                     Log.e(TAG, "\t\tLOGGED OUT COMPLETED SUCCESSFULLY")
-
             }
-
-    }
-    private fun saveSpecimen() {
-        if (mUser == null) {
-            login()
-        }
-        mUser ?: return
-
-        storeSpecimen()
-        mViewModel.save(mSpecimen, mPhotos, mUser!!)
-        mSpecimen = Specimen() //Clear Memory, and prepare phosts array for next batch of photos.
-        mPhotos = ArrayList()
     }
 
     private fun prepRequestLocationUpdates() {
@@ -173,7 +209,7 @@ class MainFragment : DiaryFragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.P)
+//    @RequiresApi(Build.VERSION_CODES.P)
     override fun onActivityResult(requestCode: Int, resultCode: Int, bundle: Intent?) {
         super.onActivityResult(requestCode, resultCode, bundle)
         if (resultCode == RESULT_OK)
@@ -193,13 +229,15 @@ class MainFragment : DiaryFragment() {
                         Log.v(TAG, "\t\t$it")
                     }
                 }
-                IMAGE_GALLERY_REQUEST_CODE ->{
+                IMAGE_GALLERY_REQUEST_CODE ->{ //TODO: we need to do something else here.
                     if (bundle != null && bundle.data != null) {
                         val image = bundle.data
                         //TODO: the linese below require AndroidP.
-                        val source = ImageDecoder.createSource(activity!!.contentResolver, image!!)
-                        val bitmap = ImageDecoder.decodeBitmap(source)
-                        imgPlant.setImageBitmap(bitmap)
+//                        val source = ImageDecoder.createSource(activity!!.contentResolver, image!!)
+//                        val bitmap = ImageDecoder.decodeBitmap(source)
+//                        imgPlant.setImageBitmap(bitmap)
+                        //TODO: isnt the line below enough:
+//                        imgPlant.setImageURI(image)
 
                     }
                 }
@@ -209,20 +247,32 @@ class MainFragment : DiaryFragment() {
             }
     }
 
-    private fun showImage(bundle: Intent?) {
+    private fun showImage(bundle: Intent?) { //TODO: we need to do something else here.
         val imageBitMap = bundle!!.extras!!.get("data") as Bitmap
-        imgPlant.setImageBitmap(imageBitMap)
+//        imgPlant.setImageBitmap(imageBitMap)
     }
 
-    private fun showImage() {
+    private fun showImage() { //TODO: we need to do something else here.
 
-        imgPlant.setImageURI(mPhotoURI)
+//        imgPlant.setImageURI(mPhotoURI)
+    }
+
+    internal fun saveSpecimen() {
+        if (mUser == null) {
+            login()
+        }
+        mUser ?: return
+
+        storeSpecimen()
+        mViewModel.save(mSpecimen, mPhotos, mUser!!)
+        mSpecimen = Specimen() //Clear Memory, and prepare phosts array for next batch of photos.
+        mPhotos = ArrayList()
     }
 
     /**
      * this function takes all info in our views and some from the Plant Entity and saves it in our local specimen object and puts it in the viewModel.
      */
-    fun storeSpecimen() {
+    internal fun storeSpecimen() {
         mSpecimen.apply {
             plantName = actvPlantName.text.toString()
             description = etDescription.text.toString()

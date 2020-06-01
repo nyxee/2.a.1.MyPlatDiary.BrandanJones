@@ -7,10 +7,18 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import com.janus.a2a1myplatdiarybrandanjones.R
+import com.janus.a2a1myplatdiarybrandanjones.dto.PlantEvent
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -74,6 +82,38 @@ open class DiaryFragment: Fragment() {
                 }
             }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+    inner class EventsAdapter(val events: List<PlantEvent>, val itemLayout: Int ):
+        RecyclerView.Adapter<EventsViewHolder>(){
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventsViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(itemLayout, parent,false)
+            return EventsViewHolder(view)
+        }
+
+        override fun getItemCount() = events.size
+
+
+        override fun onBindViewHolder(holder: EventsViewHolder, position: Int) {
+            holder.updateEvent(events[position])
+        }
+    }
+    inner class EventsViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+        private val imgEventThumbnail:ImageView = itemView.findViewById(R.id.imgEventThumbnail)
+        private val lblEventInfo:TextView = itemView.findViewById(R.id.lblEventInfo)
+
+//        @RequiresApi(Build.VERSION_CODES.P)
+        fun updateEvent(plantEvent: PlantEvent){
+            lblEventInfo.text = plantEvent.toString()
+            if (plantEvent.localPhotoURI != null && plantEvent.localPhotoURI != "null" ) {
+                imgEventThumbnail.setImageURI(Uri.parse(plantEvent.localPhotoURI))
+
+//                val source = ImageDecoder.createSource(activity!!.contentResolver, Uri.parse(plantEvent.localPhotoURI)))
+//                val bitmap = ImageDecoder.decodeBitmap(source)
+//                imgPlant.setImageBitmap(bitmap)
+            }
         }
     }
 }

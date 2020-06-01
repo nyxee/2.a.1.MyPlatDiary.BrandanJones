@@ -12,6 +12,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.janus.a2a1myplatdiarybrandanjones.dto.Photo
 import com.janus.a2a1myplatdiarybrandanjones.dto.Plant
+import com.janus.a2a1myplatdiarybrandanjones.dto.PlantEvent
 import com.janus.a2a1myplatdiarybrandanjones.dto.Specimen
 import com.janus.a2a1myplatdiarybrandanjones.service.PlantService
 
@@ -23,6 +24,7 @@ class MainViewModel : ViewModel() {
     val TAG = MainViewModel::class.java.simpleName
     var _specimens = MutableLiveData<ArrayList<Specimen>>()
     var _specimen = Specimen()
+    private var _events = MutableLiveData<List<PlantEvent>>()
 
     internal var specimens:MutableLiveData<ArrayList<Specimen>>
         get() { return _specimens}
@@ -36,9 +38,40 @@ class MainViewModel : ViewModel() {
         get() { return _plantService }
         set(value) {_plantService = value}
 
+    internal var events : MutableLiveData<List<PlantEvent>>
+        get() { return _events}
+        set(value) {_events = value}
+
     fun fetchPlants(plantName: String) {
         plants = _plantService.fetchPlants(plantName)
-        System.out.println("MainViewModel::fetchPlants($plantName) :: Sixe REturned: ${plants.value}")
+        System.out.println("MainViewModel::fetchPlants($plantName) :: Returned: ${plants.value}")
+
+    }
+    internal fun fetchEvents(){
+        firestore.collection("Specimens").document(specimen.specimenId)
+            .collection("Event").also {eventsCollection->
+                eventsCollection.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                    querySnapshot?.toObjects(PlantEvent::class.java)?.also {
+//                        Log.v(TAG, "\t\tGot ${it!!.size} Events From FireBase for SpecimenID: ${specimen.specimenId} ")
+                        _events.postValue(it)
+                    }
+                }
+            }
+    }
+    //OK:: 1EG0AAg20s7kCzTYKgUe, 1jT1IrlaboAcDiyggvKb,
+    internal fun save(event: PlantEvent) {
+        firestore.collection("Specimens")
+            .document(specimen.specimenId)
+            .collection("Event").document().also {eventDocRef->
+                event.id = eventDocRef.id    //save the ID in our event object then store it in FB.
+                eventDocRef.set(event)
+                    .addOnFailureListener {
+                        Log.e(TAG, "Failed to Save Event")
+                    }
+                    .addOnSuccessListener {
+                        Log.v(TAG, "\t\tSaved Event to Specimen.specimenId:: ${specimen.specimenId}")
+                    }
+            }
 
     }
 
@@ -123,6 +156,7 @@ class MainViewModel : ViewModel() {
             }
         }
     }
+
 
     init {
         fetchPlants("e")

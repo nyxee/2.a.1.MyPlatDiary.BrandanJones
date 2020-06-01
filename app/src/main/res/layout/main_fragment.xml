@@ -127,10 +127,18 @@
             android:layout_weight="1"
             android:src="@drawable/ic_login"
             android:contentDescription="@string/later" />
+        <ImageButton
+            android:id="@+id/btnForward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:src="@drawable/ic_forward_arrow"
+            android:contentDescription="@string/save"
+            />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imgPlant"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvEventsForSpecimens"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -143,8 +151,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:srcCompat="@drawable/art1"
-        android:contentDescription="@string/later" />
+        tools:listitem="@layout/rowlayout"
+       />
 
 <!--    android:src="@android:mipmap/sym_def_app_icon"-->
 
