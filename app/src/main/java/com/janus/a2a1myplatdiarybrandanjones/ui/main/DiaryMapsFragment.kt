@@ -4,6 +4,8 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -19,6 +21,8 @@ import com.janus.a2a1myplatdiarybrandanjones.R
 import com.janus.a2a1myplatdiarybrandanjones.dto.Specimen
 
 class DiaryMapsFragment : DiaryFragment() {
+    private lateinit var mSpecimens: List<Specimen>
+    private lateinit var mViewModel: MainViewModel
     val TAG = DiaryMapsFragment::class.java.simpleName
     private var mGoogleMap: GoogleMap? = null
     private var mMApReady = false
@@ -40,33 +44,7 @@ class DiaryMapsFragment : DiaryFragment() {
 
         mGoogleMap = googleMap
         mMApReady = true
-        listenToSpecimens()
         updateMap()
-    }
-
-    private fun listenToSpecimens() {
-        firestore.collection("Specimens").addSnapshotListener { snapshot, e ->
-            // if there is an exception we want to skip.
-            if (e != null) {
-                Log.w(TAG, "Listen Failed", e)
-                return@addSnapshotListener
-            }
-            // if we are here, we did not encounter an exception
-            snapshot?.documents?.forEach {
-                it.toObject(Specimen::class.java)?.let {specimen->
-                    val location = LatLng(specimen.latitude.toDouble(), specimen.longitude.toDouble())
-                    Log.v(TAG, "\t\tspecimen.specimenId: ${specimen.specimenId}, specimen.plantName: ${specimen.plantName}")
-                    mGoogleMap!!.addMarker(MarkerOptions().position(location).title(specimen.specimenId).snippet(specimen.plantName))
-                    //mGoogleMap!!.moveCamera(CameraUpdateFactory.newLatLng(location))
-                    mUserLocation = location
-                }
-                setCameraView()
-                setMapStyle()
-            }
-        }
-    }
-    private fun updateMap() {
-
     }
 
     //-----------------------------------------   CAMERA VIEW ---------------------------------------------------
@@ -97,6 +75,31 @@ class DiaryMapsFragment : DiaryFragment() {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment?
         mapFragment?.getMapAsync(mOnMapReadyCallback)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        activity?.let {
+            mViewModel = ViewModelProvider(it).get(MainViewModel::class.java)
+        }
+        mViewModel.specimens.observe(viewLifecycleOwner, Observer {specimens->
+            this.mSpecimens = specimens
+            updateMap()
+        })
+    }
+
+    private fun updateMap() {
+        if (mMApReady && mSpecimens != null){
+            mSpecimens.forEach {specimen->
+                val location = LatLng(specimen.latitude.toDouble(), specimen.longitude.toDouble())
+                Log.v(TAG, "\t\tspecimen.specimenId: ${specimen.specimenId}, specimen.plantName: ${specimen.plantName}")
+                mGoogleMap!!.addMarker(MarkerOptions().position(location).title(specimen.specimenId).snippet(specimen.plantName))
+                //mGoogleMap!!.moveCamera(CameraUpdateFactory.newLatLng(location))
+                mUserLocation = location
+            }
+            setCameraView()
+            setMapStyle()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -107,9 +107,9 @@ open class DiaryFragment: Fragment() {
         private val imgEventThumbnail:ImageView = itemView.findViewById(R.id.imgEventThumbnail)
         private val lblEventInfo:TextView = itemView.findViewById(R.id.lblEventInfo)
 
-//        @RequiresApi(Build.VERSION_CODES.P)
-@RequiresApi(Build.VERSION_CODES.KITKAT)
-fun bind(plantEvent: PlantEvent){
+        //        @RequiresApi(Build.VERSION_CODES.P)
+//@RequiresApi(Build.VERSION_CODES.KITKAT)
+        fun bind(plantEvent: PlantEvent){
             lblEventInfo.text = plantEvent.toString()
             if (plantEvent.localPhotoURI != null && plantEvent.localPhotoURI != "null" ) {
 //                val file = File(plantEvent.localPhotoURI!!)
