@@ -1,5 +1,6 @@
 package com.janus.a2a1myplatdiarybrandanjones.ui.main
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -10,6 +11,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -59,6 +61,7 @@ class DiaryMapsFragment : DiaryFragment() {
                     mUserLocation = location
                 }
                 setCameraView()
+                setMapStyle()
             }
         }
     }
@@ -78,6 +81,11 @@ class DiaryMapsFragment : DiaryFragment() {
         val rightBoundary = mUserLocation.longitude+resolution
         mMapBoundary = LatLngBounds(LatLng(bottomBoundary,leftBoundary), LatLng(topBoundary,rightBoundary))
         mGoogleMap!!.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0))
+//
+        //===== OR:: ============== THIS HAS FAILED TO WORK FOR NOW.
+//        val zoomLevel = 50f
+//        mGoogleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(mUserLocation, zoomLevel))
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -116,5 +124,19 @@ class DiaryMapsFragment : DiaryFragment() {
             true
         }
         else -> super.onOptionsItemSelected(item)
+    }
+    private fun setMapStyle() {
+        try {
+            // Customize the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            val success = mGoogleMap!!.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(activity, R.raw.map_style)
+            )
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.")
+            }
+        }catch (e: Resources.NotFoundException) {
+            Log.e(TAG, "Can't find style. Error: ", e)
+        }
     }
 }
