@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.GestureDetector
+import android.view.Menu
 import android.view.MotionEvent
 import android.widget.Toast
 import androidx.core.view.GestureDetectorCompat
@@ -141,4 +142,9 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.container, DiaryMapsFragment())
             .commitNow()
     }
+
+//    override fun onSupportNavigateUp(): Boolean {
+//        onBackPressed()
+//        return true
+//    }
 }
