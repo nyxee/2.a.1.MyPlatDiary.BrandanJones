@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 29
@@ -75,9 +76,15 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:6.2.1'
 
     //FaceBook Login
-    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
+    implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
     //phone number logn
     implementation 'com.google.firebase:firebase-auth:19.3.1'
     implementation 'com.google.firebase:firebase-storage-ktx:19.1.1'
+
+    //cproutines
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    //ROOM
+    implementation "androidx.room:room-runtime:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
 
 }

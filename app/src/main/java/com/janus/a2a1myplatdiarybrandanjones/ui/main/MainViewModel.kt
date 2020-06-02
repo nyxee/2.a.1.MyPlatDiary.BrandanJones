@@ -4,6 +4,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,38 +16,32 @@ import com.janus.a2a1myplatdiarybrandanjones.dto.Plant
 import com.janus.a2a1myplatdiarybrandanjones.dto.PlantEvent
 import com.janus.a2a1myplatdiarybrandanjones.dto.Specimen
 import com.janus.a2a1myplatdiarybrandanjones.service.PlantService
+import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
     private var storageReferenence: StorageReference
-    var plants = MutableLiveData<ArrayList<Plant>>()
-    var _plantService = PlantService()
-    private var firestore: FirebaseFirestore
-    val TAG = MainViewModel::class.java.simpleName
-    var _specimens = MutableLiveData<ArrayList<Specimen>>()
-    var _specimen = Specimen()
+    private var _plants = MutableLiveData<ArrayList<Plant>>()
+    private var firestore = FirebaseFirestore.getInstance()
+    private val TAG = MainViewModel::class.java.simpleName
+    private var _specimens = MutableLiveData<ArrayList<Specimen>>()
+    private var _specimen = Specimen()
     private var _events = MutableLiveData<List<PlantEvent>>()
 
+    internal var plants: MutableLiveData<ArrayList<Plant>>
+        get() = _plants
+        set(value) { _plants = value}
     internal var specimens:MutableLiveData<ArrayList<Specimen>>
-        get() { return _specimens}
+        get() = _specimens
         set(value) {_specimens = value}
 
     internal var specimen: Specimen
-        get() {return _specimen}
+        get() = _specimen
         set(value) {_specimen = value}
 
-    internal var plantService : PlantService
-        get() { return _plantService }
-        set(value) {_plantService = value}
-
     internal var events : MutableLiveData<List<PlantEvent>>
-        get() { return _events}
+        get() = _events
         set(value) {_events = value}
 
-    fun fetchPlants(plantName: String) {
-        plants = _plantService.fetchPlants(plantName)
-        System.out.println("MainViewModel::fetchPlants($plantName) :: Returned: ${plants.value}")
-
-    }
     internal fun fetchEvents(){
         firestore.collection("Specimens").document(specimen.specimenId)
             .collection("Event").also {eventsCollection->
@@ -159,8 +154,7 @@ class MainViewModel : ViewModel() {
 
 
     init {
-        fetchPlants("e")
-        firestore = FirebaseFirestore.getInstance()
+//        fetchPlants("e")
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder()
             .setPersistenceEnabled(true)
             .build()
