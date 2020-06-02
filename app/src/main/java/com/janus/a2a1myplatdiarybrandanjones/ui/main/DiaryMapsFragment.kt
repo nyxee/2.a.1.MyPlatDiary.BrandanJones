@@ -11,6 +11,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -19,7 +20,7 @@ import com.janus.a2a1myplatdiarybrandanjones.dto.Specimen
 
 class DiaryMapsFragment : DiaryFragment() {
     val TAG = DiaryMapsFragment::class.java.simpleName
-    private var mMap: GoogleMap? = null
+    private var mGoogleMap: GoogleMap? = null
     private var mMApReady = false
 
     val firestore = FirebaseFirestore.getInstance()
@@ -37,7 +38,7 @@ class DiaryMapsFragment : DiaryFragment() {
 
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
 
-        mMap = googleMap
+        mGoogleMap = googleMap
         mMApReady = true
         listenToSpecimens()
         updateMap()
@@ -54,14 +55,31 @@ class DiaryMapsFragment : DiaryFragment() {
             snapshot?.documents?.forEach {
                 it.toObject(Specimen::class.java)?.let {specimen->
                     val location = LatLng(specimen.latitude.toDouble(), specimen.longitude.toDouble())
-                    mMap!!.addMarker(MarkerOptions().position(location).title(specimen.specimenId).snippet(specimen.plantName))
-                    mMap!!.moveCamera(CameraUpdateFactory.newLatLng(location))
+                    Log.v(TAG, "\t\tspecimen.specimenId: ${specimen.specimenId}, specimen.plantName: ${specimen.plantName}")
+                    mGoogleMap!!.addMarker(MarkerOptions().position(location).title(specimen.specimenId).snippet(specimen.plantName))
+                    //mGoogleMap!!.moveCamera(CameraUpdateFactory.newLatLng(location))
+                    mUserLocation = location
                 }
+                setCameraView()
             }
         }
     }
     private fun updateMap() {
 
+    }
+
+    //-----------------------------------------   CAMERA VIEW ---------------------------------------------------
+    private var mMapBoundary: LatLngBounds? = null
+    private lateinit var mUserLocation: LatLng
+
+    private fun setCameraView(){
+        val resolution = 0.05
+        val bottomBoundary = mUserLocation.latitude-resolution
+        val leftBoundary = mUserLocation.longitude-resolution
+        val topBoundary = mUserLocation.latitude+resolution
+        val rightBoundary = mUserLocation.longitude+resolution
+        mMapBoundary = LatLngBounds(LatLng(bottomBoundary,leftBoundary), LatLng(topBoundary,rightBoundary))
+        mGoogleMap!!.moveCamera(CameraUpdateFactory.newLatLngBounds(mMapBoundary, 0))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
