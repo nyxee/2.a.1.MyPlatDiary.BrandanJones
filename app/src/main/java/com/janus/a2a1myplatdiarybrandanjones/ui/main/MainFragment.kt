@@ -5,9 +5,6 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -50,7 +47,7 @@ class MainFragment : DiaryFragment() {
     }
 
     private lateinit var mViewModel: MainViewModel
-    private lateinit var mLocationViewModel: LocationViewModel
+    private lateinit var mApplicationViewModel: ApplicationViewModel
 
     private var mPhotos = ArrayList<Photo>()
     private var mSpecimen = Specimen()
@@ -64,12 +61,14 @@ class MainFragment : DiaryFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        mApplicationViewModel = ViewModelProvider(this).get(ApplicationViewModel::class.java)
+
         //mViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         activity?.let {
             mViewModel = ViewModelProvider(it).get(MainViewModel::class.java)
         }
 
-        mViewModel.plants.observe(viewLifecycleOwner, Observer {
+        mApplicationViewModel.plantService.getLocalPlantDAO().getAllPlants().observe(viewLifecycleOwner, Observer {
             Log.v(TAG, "\t\t Number of Plants Returned:: ${it.size}")
             actvPlantName.setAdapter(ArrayAdapter(context!!, R.layout.support_simple_spinner_dropdown_item, it))
         })
@@ -182,8 +181,7 @@ class MainFragment : DiaryFragment() {
     }
 
     private fun requestLocationUpdated() {
-        mLocationViewModel = ViewModelProvider(this).get(LocationViewModel::class.java)
-        mLocationViewModel.getLocationLiveData().observe(viewLifecycleOwner, Observer {
+        mApplicationViewModel.getLocationLiveData().observe(viewLifecycleOwner, Observer {
             lbllatitudeValue.text = it.latitude
             lbllongitudeValue.text = it.longitude
         })

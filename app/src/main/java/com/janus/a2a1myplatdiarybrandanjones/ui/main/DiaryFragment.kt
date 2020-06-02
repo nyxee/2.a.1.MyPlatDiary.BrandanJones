@@ -4,7 +4,9 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -29,7 +32,7 @@ open class DiaryFragment: Fragment() {
     val CAMERA_PERMISSION_REQUEST_CODE = 1997
     private lateinit var mCurrentPhotoPath: String
     protected var mPhotoURI: Uri? = null
-
+    private val TAG = DiaryFragment::class.simpleName
     /**
      * See if we have Permission or Not.
      */
@@ -97,7 +100,7 @@ open class DiaryFragment: Fragment() {
 
 
         override fun onBindViewHolder(holder: EventsViewHolder, position: Int) {
-            holder.updateEvent(events[position])
+            holder.bind(events[position])
         }
     }
     inner class EventsViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
@@ -105,10 +108,20 @@ open class DiaryFragment: Fragment() {
         private val lblEventInfo:TextView = itemView.findViewById(R.id.lblEventInfo)
 
 //        @RequiresApi(Build.VERSION_CODES.P)
-        fun updateEvent(plantEvent: PlantEvent){
+@RequiresApi(Build.VERSION_CODES.KITKAT)
+fun bind(plantEvent: PlantEvent){
             lblEventInfo.text = plantEvent.toString()
             if (plantEvent.localPhotoURI != null && plantEvent.localPhotoURI != "null" ) {
+//                val file = File(plantEvent.localPhotoURI!!)
+//                if (file.exists()){
+//                    imgEventThumbnail.setImageURI(Uri.parse(plantEvent.localPhotoURI))
+//                }else{
+//
+//                    Log.e(TAG, "\t\tFILE DOES NOT EXISTS.. :: FILE-> ${file.absoluteFile}, \nURI-> ${plantEvent.localPhotoURI!!}")
+//                }
+
                 imgEventThumbnail.setImageURI(Uri.parse(plantEvent.localPhotoURI))
+
 
 //                val source = ImageDecoder.createSource(activity!!.contentResolver, Uri.parse(plantEvent.localPhotoURI)))
 //                val bitmap = ImageDecoder.decodeBitmap(source)
