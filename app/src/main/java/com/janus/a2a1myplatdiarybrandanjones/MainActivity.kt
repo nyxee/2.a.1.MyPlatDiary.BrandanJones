@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.janus.a2a1myplatdiarybrandanjones.ui.main.DiaryMapsFragment
 import com.janus.a2a1myplatdiarybrandanjones.ui.main.EventFragment
 import com.janus.a2a1myplatdiarybrandanjones.ui.main.MainFragment
 import com.janus.a2a1myplatdiarybrandanjones.ui.main.MainViewModel
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
         eventFragment = EventFragment.newInstance()
         mainFragment = MainFragment.newInstance()
+
         //val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         if (savedInstanceState == null) {
@@ -133,4 +135,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    internal fun onOpenMap() {
+        Log.v(TAG, "\t\tTrying To Open Map")
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, DiaryMapsFragment())
+            .commitNow()
+    }
 }

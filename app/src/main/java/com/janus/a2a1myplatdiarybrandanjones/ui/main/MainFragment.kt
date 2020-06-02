@@ -81,6 +81,9 @@ class MainFragment : DiaryFragment() {
             _mPlantId = selectedPlant.plantId
         }
 
+        btnMap.setOnClickListener {
+            (activity as MainActivity).onOpenMap()
+        }
         btnTakePhoto.setOnClickListener {
             prepTakePhoto()
         }
