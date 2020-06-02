@@ -55,7 +55,7 @@ class DiaryMapsFragment : DiaryFragment() {
                 it.toObject(Specimen::class.java)?.let {specimen->
                     val location = LatLng(specimen.latitude.toDouble(), specimen.longitude.toDouble())
                     mMap!!.addMarker(MarkerOptions().position(location).title(specimen.specimenId).snippet(specimen.plantName))
-                    mMap!!.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+                    mMap!!.moveCamera(CameraUpdateFactory.newLatLng(location))
                 }
             }
         }
