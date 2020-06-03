@@ -1,0 +1,28 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+   ================================================ I USED THE LINK BELOW AND ADDED THIS PROJECT TO MY SNAPCHAT FIREBASE PROJECT.================================================
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=EF:85:0B:36:64:D8:F3:E0:2F:5A:0C:84:2A:2D:8C:DF:14:E0:0B:CD%3Bcom.janus.a2a1myplatdiarybrandanjones.ui.main
+
+    You can also add your credentials to an existing key, using these values:
+
+    ================================= THEY GAVE A SLIGHTLY WRONG PACKAGE-NAME IN THE INSTRUCTION =======
+    Package name:
+    com.janus.a2a1myplatdiarybrandanjones.ui.main
+    ================================== IT SHOULD BE:: ===================================================
+    om.janus.a2a1myplatdiarybrandanjones
+
+    SHA-1 certificate fingerprint:
+    EF:85:0B:36:64:D8:F3:E0:2F:5A:0C:84:2A:2D:8C:DF:14:E0:0B:CD
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDWataquBWKLphuomvmOio_CSy43J5Twc4</string>
+</resources>
