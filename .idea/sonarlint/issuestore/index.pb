@@ -33,8 +33,6 @@ Qapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/RetrofitClientInstance.
 Sapp/src/test/java/com/janus/a2a1myplatdiarybrandanjones/PlantDataIntegrationTest.kt,c/6/c64d500480637e04012c87a60a14032ad33b3b0d
 ~
 Napp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/dto/LocationDetails.kt,a/a/aa59d78f797a5866e499d8e3704afff79e00b7fd
-„
-Tapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/ui/main/LocationViewModel.kt,6/a/6a8ed156167cb825e3ad29b49426ba96a33e0152
 ƒ
 Sapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/ui/main/LocationliveData.kt,6/c/6cc3ea62dc69901cdd923e7aa04a7312cbe7b752
 w
@@ -55,3 +53,13 @@ Dapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/dto/Photo.kt,f/0/f0b25
 Qapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/ui/main/EventViewModel.kt,c/0/c0cfde13ab5697db5d0f9bd62b86ebfdd21d29f1
 y
 Iapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/dto/PlantEvent.kt,7/5/75dc3edfc3644010a23bd38f8c626f8443ba4a40
+|
+Lapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/dao/PlantDatabase.kt,2/c/2cd0f7702900afa677c24be463cbef3e8b3c5628
+‡
+Wapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/ui/main/ApplicationViewModel.kt,1/1/11838ddd1cd22d6b615c64465934075fe93115a4
+^
+.app/src/release/res/values/google_maps_api.xml,8/a/8ad28fcd8d693ab58d4fdb7d36965532163ebfa3
+}
+Mapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/dao/ILocalPlantDAO.kt,d/b/db33c3235e9ab1d2678881bdab7013309fa49df9
+„
+Tapp/src/main/java/com/janus/a2a1myplatdiarybrandanjones/ui/main/DiaryMapsFragment.kt,f/8/f8c23f0ed8a2d1c62605c0ceef85fe23140ab1b0
